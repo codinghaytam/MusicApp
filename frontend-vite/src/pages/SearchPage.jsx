@@ -1,0 +1,105 @@
+import React, { useEffect, useState } from 'react';
+import SongCard from '../components/SongCard';
+import { searchSongs } from '../api/songs';
+
+function SearchPage() {
+  const [query, setQuery] = useState('');
+  const [results, setResults] = useState([]);
+  const [loading, setLoading] = useState(false);
+  const [error, setError] = useState('');
+
+  useEffect(() => {
+    const q = query.trim();
+    if (!q) {
+      setResults([]);
+      setError('');
+      setLoading(false);
+      return;
+    }
+    const handle = setTimeout(async () => {
+      setLoading(true);
+      setError('');
+      try {
+        const data = await searchSongs(q);
+        setResults(Array.isArray(data) ? data : []);
+      } catch (e) {
+        setError('Erreur de recherche');
+        setResults([]);
+      } finally {
+        setLoading(false);
+      }
+    }, 250);
+    return () => clearTimeout(handle);
+  }, [query]);
+
+  const renderBody = () => {
+    if (!query.trim()) {
+      return (
+        <p style={{ color: '#b3b3b3', textAlign: 'center', padding: 40 }}>
+          Recherchez des chansons...
+        </p>
+      );
+    }
+
+    if (loading) {
+      return (
+        <p style={{ color: '#b3b3b3', textAlign: 'center', padding: 20 }}>
+          Recherche...
+        </p>
+      );
+    }
+
+    if (error) {
+      return (
+        <p style={{ color: '#ff6b6b', textAlign: 'center', padding: 20 }}>
+          {error}
+        </p>
+      );
+    }
+
+    if (!results.length) {
+      return (
+        <p style={{ color: '#b3b3b3', textAlign: 'center', padding: 40 }}>
+          Aucune chanson trouvée.
+        </p>
+      );
+    }
+
+    return (
+      <div className="songs-grid" id="searchResults">
+        {results.map((song, idx) => (
+          <SongCard key={song.id || idx} song={song} />
+        ))}
+      </div>
+    );
+  };
+
+  return (
+    <>
+      <div className="page-header">
+        <h1 className="page-title">Rechercher</h1>
+      </div>
+      <div className="content-section">
+        <div
+          className="search-bar"
+          style={{ width: '100%', maxWidth: 600, margin: '0 auto 32px' }}
+        >
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+            <circle cx="11" cy="11" r="8" />
+            <line x1="21" y1="21" x2="16.65" y2="16.65" />
+          </svg>
+          <input
+            type="text"
+            id="searchInputPageReact"
+            placeholder="Artistes, chansons ou albums..."
+            value={query}
+            onChange={(e) => setQuery(e.target.value)}
+          />
+        </div>
+        {renderBody()}
+      </div>
+    </>
+  );
+}
+
+export default SearchPage;
