@@ -1,34 +1,27 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect } from 'react';
 import { useSongs } from '../state/SongsProvider';
-import { Smile, Frown, Angry, AlertTriangle, Meh, Music } from 'lucide-react';
+import { Smile, Frown, Angry, AlertTriangle, Meh, Music, Zap, Ban } from 'lucide-react';
 
 function StatsPage() {
-  const { songs, getStats } = useSongs();
-  const [stats, setStats] = useState({ total: 0, emotions: {} });
+  const { stats, statsLoading, refreshStats } = useSongs();
+  const statsSnapshot = stats || { total: 0, emotions: {}, averageConfidence: 0, topEmotion: '' };
 
   useEffect(() => {
-    const fetchStats = async () => {
-      const data = await getStats();
-      setStats(data);
-    };
-    fetchStats();
-  }, [songs, getStats]);
+    refreshStats();
+  }, [refreshStats]);
 
-  const emotionList = Object.entries(stats.emotions || {}).sort((a, b) => b[1] - a[1]);
-  const topEmotion = emotionList.length > 0 ? emotionList[0][0] : '-';
-  const totalSongs = stats.total || 0;
-  
-  // Calculate average confidence
-  const avgConfidence = songs.length > 0 
-    ? (songs.reduce((sum, song) => sum + (song.confidence || 0), 0) / songs.length).toFixed(1)
-    : 0;
+  const emotionList = Object.entries(statsSnapshot.emotions || {}).sort((a, b) => b[1] - a[1]);
+  const topEmotion = statsSnapshot.topEmotion || (emotionList.length > 0 ? emotionList[0][0] : '-');
+  const totalSongs = statsSnapshot.total || 0;
+  const avgConfidence = (statsSnapshot.averageConfidence || 0).toFixed(1);
 
   const emotionIconMap = {
-    joyeux: Smile,
-    triste: Frown,
-    colère: Angry,
-    peur: AlertTriangle,
-    neutre: Meh,
+    Joy: Smile,
+    Sadness: Frown,
+    Anger: Angry,
+    Fear: AlertTriangle,
+    Disgust: Ban,
+    Surprise: Zap,
     instrumental: Music,
   };
 
@@ -43,9 +36,9 @@ function StatsPage() {
           </div>
           <div className="stat-card">
             <div className="stat-value">
-              {songs.length}
+              {totalSongs}
             </div>
-            <div className="stat-label">Fichiers audio</div>
+            <div className="stat-label">Total indexé</div>
           </div>
           <div className="stat-card">
             <div className="stat-value">

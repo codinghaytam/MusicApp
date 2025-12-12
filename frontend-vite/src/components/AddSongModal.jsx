@@ -69,7 +69,8 @@ export default function AddSongModal({ open, onOpenChange }) {
         setError('')
         // Show success message
         window.setTimeout(() => {
-          window.alert(`Chanson ajoutée avec succès!\nÉmotion: ${analysisData.emotion}\nConfiance: ${analysisData.confidence}%`)
+          const labels = (analysisData.primaryEmotions || []).slice(0, 3).join(', ') || 'instrumental';
+          window.alert(`Chanson ajoutée avec succès!\nÉmotions: ${labels}\nConfiance: ${analysisData.confidence || 0}%`)
         }, 100)
       } else {
         throw new Error(result.error || 'Échec de la sauvegarde')

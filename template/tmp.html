@@ -1,6 +1,6 @@
 <!doctype html>
 <html lang="fr">
-<head>
+ <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Bibliothèque Musicale</title>
@@ -12,7 +12,7 @@
       padding: 0;
       box-sizing: border-box;
     }
-
+    
     body {
       font-family: -apple-system, BlinkMacSystemFont, 'SF Pro Display', 'Segoe UI', 'Roboto', sans-serif;
       background: #000000;
@@ -21,13 +21,13 @@
       color: #ffffff;
       overflow-x: hidden;
     }
-
+    
     .app-container {
       display: flex;
       height: 100%;
       width: 100%;
     }
-
+    
     /* Sidebar Navigation */
     .sidebar {
       width: 240px;
@@ -40,7 +40,7 @@
       top: 0;
       z-index: 100;
     }
-
+    
     .logo {
       font-size: 24px;
       font-weight: 700;
@@ -51,7 +51,7 @@
       -webkit-text-fill-color: transparent;
       background-clip: text;
     }
-
+    
     .nav-item {
       display: flex;
       align-items: center;
@@ -69,30 +69,30 @@
       width: 100%;
       text-align: left;
     }
-
+    
     .nav-item:hover {
       background: #1a1a1a;
       color: #ffffff;
     }
-
+    
     .nav-item.active {
       background: #1a1a1a;
       color: #ffffff;
     }
-
+    
     .nav-item svg {
       width: 24px;
       height: 24px;
       stroke: currentColor;
       flex-shrink: 0;
     }
-
+    
     .nav-divider {
       height: 1px;
       background: #282828;
       margin: 16px 0;
     }
-
+    
     /* Main Content */
     .main-content {
       margin-left: 240px;
@@ -101,21 +101,21 @@
       background: linear-gradient(180deg, #1a1a1a 0%, #000000 300px);
       padding-bottom: 100px;
     }
-
+    
     .page {
       display: none;
       animation: fadeIn 0.3s ease;
     }
-
+    
     .page.active {
       display: block;
     }
-
+    
     @keyframes fadeIn {
       from { opacity: 0; transform: translateY(10px); }
       to { opacity: 1; transform: translateY(0); }
     }
-
+    
     /* Header */
     .page-header {
       padding: 24px 32px;
@@ -129,18 +129,18 @@
       z-index: 10;
       border-bottom: 1px solid #1a1a1a;
     }
-
+    
     .page-title {
       font-size: 32px;
       font-weight: 700;
     }
-
+    
     .header-actions {
       display: flex;
       gap: 12px;
       align-items: center;
     }
-
+    
     .search-bar {
       display: flex;
       align-items: center;
@@ -152,19 +152,19 @@
       border: 1px solid transparent;
       transition: all 0.2s;
     }
-
+    
     .search-bar:focus-within {
       border-color: #1db954;
       background: #282828;
     }
-
+    
     .search-bar svg {
       width: 20px;
       height: 20px;
       stroke: #b3b3b3;
       flex-shrink: 0;
     }
-
+    
     .search-bar input {
       background: transparent;
       border: none;
@@ -173,11 +173,11 @@
       font-size: 14px;
       width: 100%;
     }
-
+    
     .search-bar input::placeholder {
       color: #b3b3b3;
     }
-
+    
     .btn-primary {
       background: #1db954;
       color: #000000;
@@ -192,42 +192,42 @@
       align-items: center;
       gap: 8px;
     }
-
+    
     .btn-primary:hover {
       background: #1ed760;
       transform: scale(1.04);
     }
-
+    
     .btn-primary svg {
       width: 18px;
       height: 18px;
       stroke: currentColor;
     }
-
+    
     /* Content Grid */
     .content-section {
       padding: 32px;
     }
-
+    
     .section-header {
       display: flex;
       justify-content: space-between;
       align-items: center;
       margin-bottom: 24px;
     }
-
+    
     .section-title {
       font-size: 24px;
       font-weight: 700;
     }
-
+    
     .filter-chips {
       display: flex;
       gap: 8px;
       flex-wrap: wrap;
       margin-bottom: 24px;
     }
-
+    
     .chip {
       padding: 8px 16px;
       background: #1a1a1a;
@@ -239,25 +239,25 @@
       transition: all 0.2s;
       color: #b3b3b3;
     }
-
+    
     .chip:hover {
       background: #282828;
       color: #ffffff;
     }
-
+    
     .chip.active {
       background: #1db954;
       color: #000000;
       border-color: #1db954;
     }
-
+    
     /* Song Grid */
     .songs-grid {
       display: grid;
       grid-template-columns: repeat(auto-fill, minmax(180px, 1fr));
       gap: 24px;
     }
-
+    
     .song-card {
       background: #181818;
       padding: 16px;
@@ -267,17 +267,17 @@
       position: relative;
       overflow: hidden;
     }
-
+    
     .song-card:hover {
       background: #282828;
       transform: translateY(-4px);
     }
-
+    
     .song-card:hover .play-overlay {
       opacity: 1;
       transform: translateY(0);
     }
-
+    
     .album-cover {
       width: 100%;
       aspect-ratio: 1;
@@ -291,7 +291,7 @@
       justify-content: center;
       font-size: 48px;
     }
-
+    
     .play-overlay {
       position: absolute;
       bottom: 8px;
@@ -308,19 +308,19 @@
       transition: all 0.3s;
       box-shadow: 0 8px 24px rgba(0,0,0,0.5);
     }
-
+    
     .play-overlay:hover {
       background: #1ed760;
       transform: scale(1.06) translateY(0);
     }
-
+    
     .play-overlay svg {
       width: 24px;
       height: 24px;
       fill: #000000;
       margin-left: 2px;
     }
-
+    
     .song-info h3 {
       font-size: 16px;
       font-weight: 700;
@@ -329,7 +329,7 @@
       overflow: hidden;
       text-overflow: ellipsis;
     }
-
+    
     .song-info .artist {
       font-size: 14px;
       color: #b3b3b3;
@@ -337,13 +337,13 @@
       overflow: hidden;
       text-overflow: ellipsis;
     }
-
+    
     /* List View */
     .songs-list {
       background: transparent;
       border-radius: 8px;
     }
-
+    
     .list-header {
       display: grid;
       grid-template-columns: 40px 1fr 1fr 120px 80px 40px;
@@ -356,7 +356,7 @@
       text-transform: uppercase;
       letter-spacing: 0.5px;
     }
-
+    
     .song-row {
       display: grid;
       grid-template-columns: 40px 1fr 1fr 120px 80px 40px;
@@ -367,40 +367,40 @@
       align-items: center;
       cursor: pointer;
     }
-
+    
     .song-row:hover {
       background: #1a1a1a;
     }
-
+    
     .song-row.playing {
       background: #1a1a1a;
     }
-
+    
     .song-number {
       color: #b3b3b3;
       font-size: 14px;
       text-align: center;
     }
-
+    
     .song-row:hover .song-number {
       display: none;
     }
-
+    
     .song-row:hover .play-cell::before {
       content: '▶';
       color: #ffffff;
     }
-
+    
     .play-cell {
       position: relative;
     }
-
+    
     .song-title-cell {
       display: flex;
       align-items: center;
       gap: 12px;
     }
-
+    
     .mini-cover {
       width: 40px;
       height: 40px;
@@ -412,40 +412,40 @@
       flex-shrink: 0;
       font-size: 20px;
     }
-
+    
     .title-info h4 {
       font-size: 14px;
       font-weight: 500;
       margin-bottom: 2px;
       color: #ffffff;
     }
-
+    
     .title-info p {
       font-size: 13px;
       color: #b3b3b3;
     }
-
+    
     .album-cell {
       color: #b3b3b3;
       font-size: 14px;
     }
-
+    
     .duration-cell {
       color: #b3b3b3;
       font-size: 14px;
     }
-
+    
     .plays-cell {
       color: #b3b3b3;
       font-size: 14px;
       text-align: center;
     }
-
+    
     .actions-cell {
       display: flex;
       justify-content: center;
     }
-
+    
     .btn-icon {
       background: transparent;
       border: none;
@@ -458,18 +458,18 @@
       align-items: center;
       justify-content: center;
     }
-
+    
     .btn-icon:hover {
       background: #282828;
       color: #ffffff;
     }
-
+    
     .btn-icon svg {
       width: 20px;
       height: 20px;
       stroke: currentColor;
     }
-
+    
     /* Modal */
     .modal {
       display: none;
@@ -484,11 +484,11 @@
       z-index: 1000;
       padding: 24px;
     }
-
+    
     .modal.active {
       display: flex;
     }
-
+    
     .modal-content {
       background: #282828;
       padding: 32px;
@@ -498,19 +498,19 @@
       max-height: 90%;
       overflow-y: auto;
     }
-
+    
     .modal-header {
       display: flex;
       justify-content: space-between;
       align-items: center;
       margin-bottom: 24px;
     }
-
+    
     .modal-header h2 {
       font-size: 24px;
       font-weight: 700;
     }
-
+    
     .btn-close {
       background: transparent;
       border: none;
@@ -520,22 +520,22 @@
       border-radius: 50%;
       transition: all 0.2s;
     }
-
+    
     .btn-close:hover {
       background: #3e3e3e;
       color: #ffffff;
     }
-
+    
     .btn-close svg {
       width: 24px;
       height: 24px;
       stroke: currentColor;
     }
-
+    
     .form-group {
       margin-bottom: 20px;
     }
-
+    
     .form-group label {
       display: block;
       margin-bottom: 8px;
@@ -543,7 +543,7 @@
       font-weight: 600;
       color: #ffffff;
     }
-
+    
     .form-group input {
       width: 100%;
       padding: 12px 16px;
@@ -554,19 +554,19 @@
       color: #ffffff;
       transition: all 0.2s;
     }
-
+    
     .form-group input:focus {
       outline: none;
       border-color: #1db954;
       background: #4a4a4a;
     }
-
+    
     .modal-actions {
       display: flex;
       gap: 12px;
       margin-top: 32px;
     }
-
+    
     .btn-secondary {
       flex: 1;
       padding: 12px 24px;
@@ -579,12 +579,12 @@
       cursor: pointer;
       transition: all 0.2s;
     }
-
+    
     .btn-secondary:hover {
       background: #3e3e3e;
       border-color: #b3b3b3;
     }
-
+    
     .btn-primary-full {
       flex: 1;
       padding: 12px 24px;
@@ -597,44 +597,44 @@
       cursor: pointer;
       transition: all 0.2s;
     }
-
+    
     .btn-primary-full:hover {
       background: #1ed760;
       transform: scale(1.02);
     }
-
+    
     .btn-primary-full:disabled {
       background: #535353;
       color: #b3b3b3;
       cursor: not-allowed;
       transform: scale(1);
     }
-
+    
     /* Empty State */
     .empty-state {
       text-align: center;
       padding: 80px 24px;
     }
-
+    
     .empty-state svg {
       width: 80px;
       height: 80px;
       stroke: #535353;
       margin-bottom: 24px;
     }
-
+    
     .empty-state h3 {
       font-size: 24px;
       font-weight: 700;
       margin-bottom: 12px;
     }
-
+    
     .empty-state p {
       color: #b3b3b3;
       font-size: 16px;
       margin-bottom: 24px;
     }
-
+    
     /* Toast */
     .toast {
       position: fixed;
@@ -654,21 +654,21 @@
       animation: slideUp 0.3s ease;
       box-shadow: 0 8px 24px rgba(0,0,0,0.5);
     }
-
+    
     .toast.active {
       display: flex;
     }
-
+    
     .toast.error {
       background: #e22134;
       color: #ffffff;
     }
-
+    
     @keyframes slideUp {
       from { transform: translate(-50%, 100px); opacity: 0; }
       to { transform: translate(-50%, 0); opacity: 1; }
     }
-
+    
     /* Stats Cards */
     .stats-grid {
       display: grid;
@@ -676,13 +676,13 @@
       gap: 16px;
       margin-bottom: 32px;
     }
-
+    
     .stat-card {
       background: #181818;
       padding: 24px;
       border-radius: 12px;
     }
-
+    
     .stat-value {
       font-size: 32px;
       font-weight: 700;
@@ -692,13 +692,13 @@
       -webkit-text-fill-color: transparent;
       background-clip: text;
     }
-
+    
     .stat-label {
       font-size: 14px;
       color: #b3b3b3;
       font-weight: 600;
     }
-
+    
     /* View Toggle */
     .view-toggle {
       display: flex;
@@ -707,7 +707,7 @@
       padding: 4px;
       border-radius: 8px;
     }
-
+    
     .view-btn {
       padding: 8px 16px;
       background: transparent;
@@ -719,236 +719,80 @@
       font-size: 14px;
       font-weight: 600;
     }
-
+    
     .view-btn:hover {
       color: #ffffff;
     }
-
+    
     .view-btn.active {
       background: #282828;
       color: #ffffff;
     }
-
-    /* Sidebar Footer */
-    .sidebar-footer {
-      position: absolute;
-      bottom: 0;
-      left: 0;
-      right: 0;
-      padding: 16px;
-      border-top: 1px solid #282828;
-    }
-
-    .login-btn {
-      width: 100%;
-      display: flex;
-      align-items: center;
-      gap: 12px;
-      padding: 12px 16px;
-      background: #1a1a1a;
-      border: 1px solid #282828;
-      border-radius: 24px;
-      color: #ffffff;
-      font-size: 14px;
-      font-weight: 600;
-      cursor: pointer;
-      transition: all 0.2s;
-    }
-
-    .login-btn:hover {
-      background: #282828;
-      border-color: #1db954;
-    }
-
-    .login-btn svg {
-      width: 20px;
-      height: 20px;
-      stroke: currentColor;
-      flex-shrink: 0;
-    }
-
-    .login-btn.logged-in {
-      background: rgba(29, 185, 84, 0.1);
-      border-color: #1db954;
-    }
-
-    .login-btn.logged-in:hover {
-      background: rgba(29, 185, 84, 0.2);
-    }
-
-    .user-avatar {
-      width: 32px;
-      height: 32px;
-      border-radius: 50%;
-      background: linear-gradient(135deg, #1db954 0%, #1ed760 100%);
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      font-size: 16px;
-      flex-shrink: 0;
-    }
-
-    /* Logs Styles */
-    .logs-container {
-      max-width: 900px;
-      margin: 0 auto;
-    }
-
-    .log-item {
-      background: #181818;
-      padding: 20px;
-      border-radius: 12px;
-      margin-bottom: 12px;
-      display: flex;
-      gap: 16px;
-      align-items: flex-start;
-      transition: all 0.2s;
-      border: 1px solid transparent;
-    }
-
-    .log-item:hover {
-      background: #282828;
-      border-color: #1db954;
-    }
-
-    .log-icon {
-      width: 40px;
-      height: 40px;
-      border-radius: 50%;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      flex-shrink: 0;
-      font-size: 18px;
-    }
-
-    .log-icon.add {
-      background: rgba(29, 185, 84, 0.2);
-      color: #1db954;
-    }
-
-    .log-icon.delete {
-      background: rgba(226, 33, 52, 0.2);
-      color: #e22134;
-    }
-
-    .log-icon.play {
-      background: rgba(30, 215, 96, 0.2);
-      color: #1ed760;
-    }
-
-    .log-icon.search {
-      background: rgba(41, 128, 185, 0.2);
-      color: #2980b9;
-    }
-
-    .log-content {
-      flex: 1;
-    }
-
-    .log-header {
-      display: flex;
-      justify-content: space-between;
-      align-items: flex-start;
-      margin-bottom: 8px;
-    }
-
-    .log-action {
-      font-size: 16px;
-      font-weight: 600;
-      color: #ffffff;
-    }
-
-    .log-time {
-      font-size: 13px;
-      color: #b3b3b3;
-      white-space: nowrap;
-    }
-
-    .log-details {
-      font-size: 14px;
-      color: #b3b3b3;
-      line-height: 1.5;
-    }
-
-    .log-song-title {
-      color: #1db954;
-      font-weight: 600;
-    }
-
+    
     @media (max-width: 768px) {
       .sidebar {
         width: 72px;
         padding: 24px 8px;
       }
-
+      
       .logo {
         font-size: 20px;
         text-align: center;
       }
-
+      
       .nav-item span {
         display: none;
       }
-
+      
       .nav-item {
         justify-content: center;
         padding: 12px;
       }
-
+      
       .main-content {
         margin-left: 72px;
         width: calc(100% - 72px);
       }
-
+      
       .page-header {
         flex-direction: column;
         gap: 16px;
         align-items: flex-start;
       }
-
+      
       .search-bar {
         width: 100%;
       }
-
+      
       .songs-grid {
         grid-template-columns: repeat(auto-fill, minmax(140px, 1fr));
         gap: 16px;
       }
-
+      
       .list-header {
         display: none;
       }
-
+      
       .song-row {
         grid-template-columns: 40px 1fr 60px;
         gap: 12px;
       }
-
+      
       .album-cell,
       .plays-cell,
       .duration-cell {
         display: none;
       }
-
-      .log-item {
-        padding: 16px;
-      }
-
-      .log-header {
-        flex-direction: column;
-        gap: 4px;
-      }
     }
   </style>
   <style>@view-transition { navigation: auto; }</style>
   <script src="https://cdn.tailwindcss.com" type="text/javascript"></script>
-</head>
-<body>
-<div class="app-container"><!-- Sidebar -->
-  <aside class="sidebar">
+ </head>
+ <body>
+  <div class="app-container"><!-- Sidebar -->
+   <aside class="sidebar">
     <div class="logo">
-      🎵 Music
+     🎵 Music
     </div>
     <nav><button class="nav-item active" data-page="library">
       <svg viewbox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"></path> <polyline points="9 22 9 12 15 12 15 22"></polyline>
@@ -957,453 +801,342 @@
       </svg><span>Rechercher</span> </button> <button class="nav-item" data-page="favorites">
       <svg viewbox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"></path>
       </svg><span>Favoris</span> </button>
-      <div class="nav-divider"></div><button class="nav-item" data-page="playlists">
-        <svg viewbox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="8" y1="6" x2="21" y2="6"></line> <line x1="8" y1="12" x2="21" y2="12"></line> <line x1="8" y1="18" x2="21" y2="18"></line> <line x1="3" y1="6" x2="3.01" y2="6"></line> <line x1="3" y1="12" x2="3.01" y2="12"></line> <line x1="3" y1="18" x2="3.01" y2="18"></line>
-        </svg><span>Playlists</span> </button> <button class="nav-item" data-page="stats">
-        <svg viewbox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="12" y1="20" x2="12" y2="10"></line> <line x1="18" y1="20" x2="18" y2="4"></line> <line x1="6" y1="20" x2="6" y2="16"></line>
-        </svg><span>Statistiques</span> </button> <button class="nav-item" data-page="logs">
-        <svg viewbox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path> <polyline points="14 2 14 8 20 8"></polyline> <line x1="16" y1="13" x2="8" y2="13"></line> <line x1="16" y1="17" x2="8" y2="17"></line> <polyline points="10 9 9 9 8 9"></polyline>
-        </svg><span>Historique</span> </button>
+     <div class="nav-divider"></div><button class="nav-item" data-page="playlists">
+      <svg viewbox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="8" y1="6" x2="21" y2="6"></line> <line x1="8" y1="12" x2="21" y2="12"></line> <line x1="8" y1="18" x2="21" y2="18"></line> <line x1="3" y1="6" x2="3.01" y2="6"></line> <line x1="3" y1="12" x2="3.01" y2="12"></line> <line x1="3" y1="18" x2="3.01" y2="18"></line>
+      </svg><span>Playlists</span> </button> <button class="nav-item" data-page="stats">
+      <svg viewbox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="12" y1="20" x2="12" y2="10"></line> <line x1="18" y1="20" x2="18" y2="4"></line> <line x1="6" y1="20" x2="6" y2="16"></line>
+      </svg><span>Statistiques</span> </button>
     </nav>
-    <div class="sidebar-footer"><button class="login-btn" id="loginBtn">
-      <svg viewbox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"></path> <circle cx="12" cy="7" r="4"></circle>
-      </svg><span>Se connecter</span> </button>
-    </div>
-  </aside><!-- Main Content -->
-  <main class="main-content"><!-- Library Page -->
+   </aside><!-- Main Content -->
+   <main class="main-content"><!-- Library Page -->
     <div class="page active" id="libraryPage">
-      <div class="page-header">
-        <h1 class="page-title" id="libraryTitle">Bibliothèque</h1>
-        <div class="header-actions">
-          <div class="search-bar">
-            <svg viewbox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="8"></circle> <line x1="21" y1="21" x2="16.65" y2="16.65"></line>
-            </svg><input type="text" id="searchInput" placeholder="Rechercher...">
-          </div><button class="btn-primary" id="addSongBtn">
-          <svg viewbox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="12" y1="5" x2="12" y2="19"></line> <line x1="5" y1="12" x2="19" y2="12"></line>
-          </svg> Ajouter </button>
-        </div>
+     <div class="page-header">
+      <h1 class="page-title" id="libraryTitle">Bibliothèque</h1>
+      <div class="header-actions">
+       <div class="search-bar">
+        <svg viewbox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="8"></circle> <line x1="21" y1="21" x2="16.65" y2="16.65"></line>
+        </svg><input type="text" id="searchInput" placeholder="Rechercher...">
+       </div><button class="btn-primary" id="addSongBtn">
+        <svg viewbox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="12" y1="5" x2="12" y2="19"></line> <line x1="5" y1="12" x2="19" y2="12"></line>
+        </svg> Ajouter </button>
       </div>
-      <div class="content-section">
-        <div class="section-header">
-          <div class="filter-chips" id="filterChips"><button class="chip active" data-filter="all">Tous</button> <button class="chip" data-filter="joyeux">Joyeux</button> <button class="chip" data-filter="triste">Triste</button> <button class="chip" data-filter="énergique">Énergique</button> <button class="chip" data-filter="calme">Calme</button> <button class="chip" data-filter="romantique">Romantique</button>
-          </div>
-          <div class="view-toggle"><button class="view-btn active" data-view="grid">Grille</button> <button class="view-btn" data-view="list">Liste</button>
-          </div>
-        </div>
-        <div id="gridView" class="songs-grid"></div>
-        <div id="listView" class="songs-list" style="display: none;">
-          <div class="list-header">
-            <div>
-              #
-            </div>
-            <div>
-              Titre
-            </div>
-            <div>
-              Album
-            </div>
-            <div>
-              Ajouté le
-            </div>
-            <div>
-              Durée
-            </div>
-            <div></div>
-          </div>
-          <div id="songsList"></div>
-        </div>
-        <div id="emptyState" class="empty-state" style="display: none;">
-          <svg viewbox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M9 18V5l12-2v13"></path> <circle cx="6" cy="18" r="3"></circle> <circle cx="18" cy="16" r="3"></circle>
-          </svg>
-          <h3 id="emptyMessage">Aucune chanson</h3>
-          <p>Commencez à construire votre bibliothèque</p><button class="btn-primary" onclick="document.getElementById('addSongBtn').click()"> Ajouter une chanson </button>
-        </div>
+     </div>
+     <div class="content-section">
+      <div class="section-header">
+       <div class="filter-chips" id="filterChips"><button class="chip active" data-filter="all">Tous</button> <button class="chip" data-filter="joyeux">Joyeux</button> <button class="chip" data-filter="triste">Triste</button> <button class="chip" data-filter="énergique">Énergique</button> <button class="chip" data-filter="calme">Calme</button> <button class="chip" data-filter="romantique">Romantique</button>
+       </div>
+       <div class="view-toggle"><button class="view-btn active" data-view="grid">Grille</button> <button class="view-btn" data-view="list">Liste</button>
+       </div>
       </div>
+      <div id="gridView" class="songs-grid"></div>
+      <div id="listView" class="songs-list" style="display: none;">
+       <div class="list-header">
+        <div>
+         #
+        </div>
+        <div>
+         Titre
+        </div>
+        <div>
+         Album
+        </div>
+        <div>
+         Ajouté le
+        </div>
+        <div>
+         Durée
+        </div>
+        <div></div>
+       </div>
+       <div id="songsList"></div>
+      </div>
+      <div id="emptyState" class="empty-state" style="display: none;">
+       <svg viewbox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M9 18V5l12-2v13"></path> <circle cx="6" cy="18" r="3"></circle> <circle cx="18" cy="16" r="3"></circle>
+       </svg>
+       <h3 id="emptyMessage">Aucune chanson</h3>
+       <p>Commencez à construire votre bibliothèque</p><button class="btn-primary" onclick="document.getElementById('addSongBtn').click()"> Ajouter une chanson </button>
+      </div>
+     </div>
     </div><!-- Search Page -->
     <div class="page" id="searchPage">
-      <div class="page-header">
-        <h1 class="page-title">Rechercher</h1>
+     <div class="page-header">
+      <h1 class="page-title">Rechercher</h1>
+     </div>
+     <div class="content-section">
+      <div class="search-bar" style="width: 100%; max-width: 600px; margin: 0 auto 32px;">
+       <svg viewbox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="8"></circle> <line x1="21" y1="21" x2="16.65" y2="16.65"></line>
+       </svg><input type="text" id="searchInputPage" placeholder="Artistes, chansons ou albums...">
       </div>
-      <div class="content-section">
-        <div class="search-bar" style="width: 100%; max-width: 600px; margin: 0 auto 32px;">
-          <svg viewbox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="8"></circle> <line x1="21" y1="21" x2="16.65" y2="16.65"></line>
-          </svg><input type="text" id="searchInputPage" placeholder="Artistes, chansons ou albums...">
-        </div>
-        <div id="searchResults" class="songs-grid"></div>
-      </div>
+      <div id="searchResults" class="songs-grid"></div>
+     </div>
     </div><!-- Favorites Page -->
     <div class="page" id="favoritesPage">
-      <div class="page-header">
-        <h1 class="page-title">Favoris</h1>
-      </div>
-      <div class="content-section">
-        <div id="favoritesList" class="songs-grid"></div>
-      </div>
+     <div class="page-header">
+      <h1 class="page-title">Favoris</h1>
+     </div>
+     <div class="content-section">
+      <div id="favoritesList" class="songs-grid"></div>
+     </div>
     </div><!-- Stats Page -->
     <div class="page" id="statsPage">
-      <div class="page-header">
-        <h1 class="page-title">Statistiques</h1>
+     <div class="page-header">
+      <h1 class="page-title">Statistiques</h1>
+     </div>
+     <div class="content-section">
+      <div class="stats-grid">
+       <div class="stat-card">
+        <div class="stat-value" id="totalSongs">
+         0
+        </div>
+        <div class="stat-label">
+         Chansons
+        </div>
+       </div>
+       <div class="stat-card">
+        <div class="stat-value" id="totalPlays">
+         0
+        </div>
+        <div class="stat-label">
+         Écoutes
+        </div>
+       </div>
+       <div class="stat-card">
+        <div class="stat-value" id="avgRating">
+         0
+        </div>
+        <div class="stat-label">
+         Note moyenne
+        </div>
+       </div>
+       <div class="stat-card">
+        <div class="stat-value" id="topSentiment">
+         -
+        </div>
+        <div class="stat-label">
+         Genre préféré
+        </div>
+       </div>
       </div>
-      <div class="content-section">
-        <div class="stats-grid">
-          <div class="stat-card">
-            <div class="stat-value" id="totalSongs">
-              0
-            </div>
-            <div class="stat-label">
-              Chansons
-            </div>
-          </div>
-          <div class="stat-card">
-            <div class="stat-value" id="totalPlays">
-              0
-            </div>
-            <div class="stat-label">
-              Écoutes
-            </div>
-          </div>
-          <div class="stat-card">
-            <div class="stat-value" id="avgRating">
-              0
-            </div>
-            <div class="stat-label">
-              Note moyenne
-            </div>
-          </div>
-          <div class="stat-card">
-            <div class="stat-value" id="topSentiment">
-              -
-            </div>
-            <div class="stat-label">
-              Genre préféré
-            </div>
-          </div>
-        </div>
-        <div class="section-title" style="margin-bottom: 24px;">
-          Les plus écoutées
-        </div>
-        <div id="topSongs" class="songs-list">
-          <div class="list-header">
-            <div>
-              #
-            </div>
-            <div>
-              Titre
-            </div>
-            <div>
-              Album
-            </div>
-            <div>
-              Ajouté le
-            </div>
-            <div>
-              Durée
-            </div>
-            <div></div>
-          </div>
-          <div id="topSongsList"></div>
-        </div>
+      <div class="section-title" style="margin-bottom: 24px;">
+       Les plus écoutées
       </div>
-    </div><!-- Logs Page -->
-    <div class="page" id="logsPage">
-      <div class="page-header">
-        <h1 class="page-title">Historique d'activité</h1>
-        <div class="header-actions"><button class="btn-secondary" id="clearLogsBtn" style="padding: 12px 24px; border-radius: 24px;"> Effacer l'historique </button>
+      <div id="topSongs" class="songs-list">
+       <div class="list-header">
+        <div>
+         #
         </div>
-      </div>
-      <div class="content-section">
-        <div id="logsList" class="logs-container"></div>
-        <div id="emptyLogs" class="empty-state" style="display: none;">
-          <svg viewbox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path> <polyline points="14 2 14 8 20 8"></polyline>
-          </svg>
-          <h3>Aucune activité</h3>
-          <p>L'historique de vos actions apparaîtra ici</p>
+        <div>
+         Titre
         </div>
+        <div>
+         Album
+        </div>
+        <div>
+         Ajouté le
+        </div>
+        <div>
+         Durée
+        </div>
+        <div></div>
+       </div>
+       <div id="topSongsList"></div>
       </div>
+     </div>
     </div>
-  </main>
-</div><!-- Add Song Modal -->
-<div class="modal" id="addModal">
-  <div class="modal-content">
+   </main>
+  </div><!-- Add Song Modal -->
+  <div class="modal" id="addModal">
+   <div class="modal-content">
     <div class="modal-header">
-      <h2>Ajouter une chanson</h2><button class="btn-close" id="closeModal">
+     <h2>Ajouter une chanson</h2><button class="btn-close" id="closeModal">
       <svg viewbox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="18" y1="6" x2="6" y2="18"></line> <line x1="6" y1="6" x2="18" y2="18"></line>
       </svg></button>
     </div>
     <form id="addSongForm">
-      <div class="form-group"><label for="songTitle">Titre de la chanson *</label> <input type="text" id="songTitle" required>
-      </div>
-      <div class="form-group"><label for="songArtist">Artiste *</label> <input type="text" id="songArtist" required>
-      </div>
-      <div class="form-group"><label for="songAlbum">Album</label> <input type="text" id="songAlbum" placeholder="Single">
-      </div>
-      <div class="modal-actions"><button type="button" class="btn-secondary" id="cancelBtn">Annuler</button> <button type="submit" class="btn-primary-full" id="submitBtn">Ajouter</button>
-      </div>
+     <div class="form-group"><label for="songTitle">Titre de la chanson *</label> <input type="text" id="songTitle" required>
+     </div>
+     <div class="form-group"><label for="songArtist">Artiste *</label> <input type="text" id="songArtist" required>
+     </div>
+     <div class="form-group"><label for="songAlbum">Album</label> <input type="text" id="songAlbum" placeholder="Single">
+     </div>
+     <div class="modal-actions"><button type="button" class="btn-secondary" id="cancelBtn">Annuler</button> <button type="submit" class="btn-primary-full" id="submitBtn">Ajouter</button>
+     </div>
     </form>
+   </div>
+  </div><!-- Toast -->
+  <div class="toast" id="toast"><span id="toastMessage"></span>
   </div>
-</div><!-- Toast -->
-<div class="toast" id="toast"><span id="toastMessage"></span>
-</div>
-<script>
-  const defaultConfig = {
-    library_title: "Bibliothèque",
-    empty_message: "Aucune chanson",
-    background_color: "#000000",
-    surface_color: "#181818",
-    text_color: "#ffffff",
-    primary_action_color: "#1db954",
-    secondary_action_color: "#282828"
-  };
-
-  let currentSongs = [];
-  let currentFilter = 'all';
-  let currentView = 'grid';
-  let currentPage = 'library';
-  let currentSearch = '';
-  let activityLogs = [];
-  let isLoggedIn = false;
-  let currentUser = null;
-
-  // Charger l'état de connexion
-  function loadLoginState() {
-    const saved = localStorage.getItem('musicLibraryUser');
-    if (saved) {
-      try {
-        currentUser = JSON.parse(saved);
-        isLoggedIn = true;
-        updateLoginButton();
-      } catch (e) {
-        isLoggedIn = false;
-      }
-    }
-  }
-
-  // Sauvegarder l'état de connexion
-  function saveLoginState() {
-    if (currentUser) {
-      localStorage.setItem('musicLibraryUser', JSON.stringify(currentUser));
-    } else {
-      localStorage.removeItem('musicLibraryUser');
-    }
-  }
-
-  // Mettre à jour le bouton de connexion
-  function updateLoginButton() {
-    const loginBtn = document.getElementById('loginBtn');
-
-    if (isLoggedIn && currentUser) {
-      loginBtn.classList.add('logged-in');
-      loginBtn.innerHTML = `
-          <div class="user-avatar">${currentUser.avatar}</div>
-          <span>${currentUser.name}</span>
-        `;
-    } else {
-      loginBtn.classList.remove('logged-in');
-      loginBtn.innerHTML = `
-          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-            <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"></path>
-            <circle cx="12" cy="7" r="4"></circle>
-          </svg>
-          <span>Se connecter</span>
-        `;
-    }
-  }
-
-  // Charger les logs depuis localStorage
-  function loadLogs() {
-    const saved = localStorage.getItem('musicLibraryLogs');
-    if (saved) {
-      try {
-        activityLogs = JSON.parse(saved);
-      } catch (e) {
-        activityLogs = [];
-      }
-    }
-  }
-
-  // Sauvegarder les logs dans localStorage
-  function saveLogs() {
-    localStorage.setItem('musicLibraryLogs', JSON.stringify(activityLogs));
-  }
-
-  // Ajouter un log
-  function addLog(type, action, details) {
-    const log = {
-      id: generateId(),
-      type,
-      action,
-      details,
-      timestamp: new Date().toISOString()
+  <script>
+    const defaultConfig = {
+      library_title: "Bibliothèque",
+      empty_message: "Aucune chanson",
+      background_color: "#000000",
+      surface_color: "#181818",
+      text_color: "#ffffff",
+      primary_action_color: "#1db954",
+      secondary_action_color: "#282828"
     };
-    activityLogs.unshift(log);
-    // Garder seulement les 100 derniers logs
-    if (activityLogs.length > 100) {
-      activityLogs = activityLogs.slice(0, 100);
-    }
-    saveLogs();
-    if (currentPage === 'logs') {
-      renderLogs();
-    }
-  }
-
-  const dataHandler = {
-    onDataChanged(data) {
-      currentSongs = data;
-      renderAllViews();
-    }
-  };
-
-  async function initApp() {
-    loadLoginState();
-    loadLogs();
-    renderLogs();
-
-    const initResult = await window.dataSdk.init(dataHandler);
-    if (!initResult.isOk) {
-      showToast('Erreur d\'initialisation', 'error');
-      return;
-    }
-
-    if (window.elementSdk) {
-      window.elementSdk.init({
-        defaultConfig,
-        onConfigChange: async (config) => {
-          document.getElementById('libraryTitle').textContent = config.library_title || defaultConfig.library_title;
-          document.getElementById('emptyMessage').textContent = config.empty_message || defaultConfig.empty_message;
-
-          const bgColor = config.background_color || defaultConfig.background_color;
-          const surfaceColor = config.surface_color || defaultConfig.surface_color;
-          const textColor = config.text_color || defaultConfig.text_color;
-          const primaryColor = config.primary_action_color || defaultConfig.primary_action_color;
-
-          document.body.style.background = bgColor;
-          document.querySelectorAll('.sidebar, .main-content').forEach(el => {
-            el.style.background = bgColor;
-          });
-          document.querySelectorAll('.song-card, .stat-card, .chip, .view-toggle').forEach(el => {
-            el.style.background = surfaceColor;
-          });
-          document.querySelectorAll('.btn-primary, .btn-primary-full, .chip.active').forEach(el => {
-            el.style.background = primaryColor;
-          });
-        },
-        mapToCapabilities: (config) => ({
-          recolorables: [
-            {
-              get: () => config.background_color || defaultConfig.background_color,
-              set: (value) => {
-                if (window.elementSdk) {
-                  window.elementSdk.config.background_color = value;
-                  window.elementSdk.setConfig({ background_color: value });
-                }
-              }
-            },
-            {
-              get: () => config.surface_color || defaultConfig.surface_color,
-              set: (value) => {
-                if (window.elementSdk) {
-                  window.elementSdk.config.surface_color = value;
-                  window.elementSdk.setConfig({ surface_color: value });
-                }
-              }
-            },
-            {
-              get: () => config.text_color || defaultConfig.text_color,
-              set: (value) => {
-                if (window.elementSdk) {
-                  window.elementSdk.config.text_color = value;
-                  window.elementSdk.setConfig({ text_color: value });
-                }
-              }
-            },
-            {
-              get: () => config.primary_action_color || defaultConfig.primary_action_color,
-              set: (value) => {
-                if (window.elementSdk) {
-                  window.elementSdk.config.primary_action_color = value;
-                  window.elementSdk.setConfig({ primary_action_color: value });
-                }
-              }
-            }
-          ],
-          borderables: [],
-          fontEditable: undefined,
-          fontSizeable: undefined
-        }),
-        mapToEditPanelValues: (config) => new Map([
-          ['library_title', config.library_title || defaultConfig.library_title],
-          ['empty_message', config.empty_message || defaultConfig.empty_message]
-        ])
-      });
-    }
-  }
-
-  function generateId() {
-    return Date.now().toString(36) + Math.random().toString(36).substr(2);
-  }
-
-  function generateColor() {
-    const colors = ['#1db954', '#e13300', '#2d46b9', '#f037a5', '#ff6600', '#8e44ad'];
-    return colors[Math.floor(Math.random() * colors.length)];
-  }
-
-  function detectSentiment(title, artist) {
-    const text = (title + ' ' + artist).toLowerCase();
-    const sentiments = {
-      joyeux: ['happy', 'joy', 'dance', 'party', 'fun'],
-      triste: ['sad', 'cry', 'lonely', 'pain'],
-      énergique: ['energy', 'power', 'rock', 'hard'],
-      calme: ['calm', 'peace', 'soft', 'quiet'],
-      romantique: ['love', 'heart', 'kiss', 'romantic']
+    
+    let currentSongs = [];
+    let currentFilter = 'all';
+    let currentView = 'grid';
+    let currentPage = 'library';
+    let currentSearch = '';
+    
+    const dataHandler = {
+      onDataChanged(data) {
+        currentSongs = data;
+        renderAllViews();
+      }
     };
-
-    for (const [sentiment, keywords] of Object.entries(sentiments)) {
-      if (keywords.some(keyword => text.includes(keyword))) {
-        return sentiment;
+    
+    async function initApp() {
+      const initResult = await window.dataSdk.init(dataHandler);
+      if (!initResult.isOk) {
+        showToast('Erreur d\'initialisation', 'error');
+        return;
+      }
+      
+      if (window.elementSdk) {
+        window.elementSdk.init({
+          defaultConfig,
+          onConfigChange: async (config) => {
+            document.getElementById('libraryTitle').textContent = config.library_title || defaultConfig.library_title;
+            document.getElementById('emptyMessage').textContent = config.empty_message || defaultConfig.empty_message;
+            
+            const bgColor = config.background_color || defaultConfig.background_color;
+            const surfaceColor = config.surface_color || defaultConfig.surface_color;
+            const textColor = config.text_color || defaultConfig.text_color;
+            const primaryColor = config.primary_action_color || defaultConfig.primary_action_color;
+            
+            document.body.style.background = bgColor;
+            document.querySelectorAll('.sidebar, .main-content').forEach(el => {
+              el.style.background = bgColor;
+            });
+            document.querySelectorAll('.song-card, .stat-card, .chip, .view-toggle').forEach(el => {
+              el.style.background = surfaceColor;
+            });
+            document.querySelectorAll('.btn-primary, .btn-primary-full, .chip.active').forEach(el => {
+              el.style.background = primaryColor;
+            });
+          },
+          mapToCapabilities: (config) => ({
+            recolorables: [
+              {
+                get: () => config.background_color || defaultConfig.background_color,
+                set: (value) => {
+                  if (window.elementSdk) {
+                    window.elementSdk.config.background_color = value;
+                    window.elementSdk.setConfig({ background_color: value });
+                  }
+                }
+              },
+              {
+                get: () => config.surface_color || defaultConfig.surface_color,
+                set: (value) => {
+                  if (window.elementSdk) {
+                    window.elementSdk.config.surface_color = value;
+                    window.elementSdk.setConfig({ surface_color: value });
+                  }
+                }
+              },
+              {
+                get: () => config.text_color || defaultConfig.text_color,
+                set: (value) => {
+                  if (window.elementSdk) {
+                    window.elementSdk.config.text_color = value;
+                    window.elementSdk.setConfig({ text_color: value });
+                  }
+                }
+              },
+              {
+                get: () => config.primary_action_color || defaultConfig.primary_action_color,
+                set: (value) => {
+                  if (window.elementSdk) {
+                    window.elementSdk.config.primary_action_color = value;
+                    window.elementSdk.setConfig({ primary_action_color: value });
+                  }
+                }
+              }
+            ],
+            borderables: [],
+            fontEditable: undefined,
+            fontSizeable: undefined
+          }),
+          mapToEditPanelValues: (config) => new Map([
+            ['library_title', config.library_title || defaultConfig.library_title],
+            ['empty_message', config.empty_message || defaultConfig.empty_message]
+          ])
+        });
       }
     }
-
-    return ['joyeux', 'calme', 'énergique', 'romantique'][Math.floor(Math.random() * 4)];
-  }
-
-  function renderAllViews() {
-    renderLibrary();
-    renderSearch();
-    renderFavorites();
-    renderStats();
-  }
-
-  function renderLibrary() {
-    let filteredSongs = currentSongs;
-
-    if (currentFilter !== 'all') {
-      filteredSongs = filteredSongs.filter(song => song.sentiment === currentFilter);
+    
+    function generateId() {
+      return Date.now().toString(36) + Math.random().toString(36).substr(2);
     }
-
-    if (currentSearch) {
-      filteredSongs = filteredSongs.filter(song =>
-        song.title.toLowerCase().includes(currentSearch.toLowerCase()) ||
-        song.artist.toLowerCase().includes(currentSearch.toLowerCase())
-      );
+    
+    function generateColor() {
+      const colors = ['#1db954', '#e13300', '#2d46b9', '#f037a5', '#ff6600', '#8e44ad'];
+      return colors[Math.floor(Math.random() * colors.length)];
     }
-
-    const gridView = document.getElementById('gridView');
-    const listView = document.getElementById('listView');
-    const emptyState = document.getElementById('emptyState');
-
-    if (filteredSongs.length === 0) {
-      gridView.style.display = 'none';
-      listView.style.display = 'none';
-      emptyState.style.display = 'block';
-      return;
+    
+    function detectSentiment(title, artist) {
+      const text = (title + ' ' + artist).toLowerCase();
+      const sentiments = {
+        joyeux: ['happy', 'joy', 'dance', 'party', 'fun'],
+        triste: ['sad', 'cry', 'lonely', 'pain'],
+        énergique: ['energy', 'power', 'rock', 'hard'],
+        calme: ['calm', 'peace', 'soft', 'quiet'],
+        romantique: ['love', 'heart', 'kiss', 'romantic']
+      };
+      
+      for (const [sentiment, keywords] of Object.entries(sentiments)) {
+        if (keywords.some(keyword => text.includes(keyword))) {
+          return sentiment;
+        }
+      }
+      
+      return ['joyeux', 'calme', 'énergique', 'romantique'][Math.floor(Math.random() * 4)];
     }
-
-    emptyState.style.display = 'none';
-
-    if (currentView === 'grid') {
-      gridView.style.display = 'grid';
-      listView.style.display = 'none';
-      gridView.innerHTML = filteredSongs.map(song => `
+    
+    function renderAllViews() {
+      renderLibrary();
+      renderSearch();
+      renderFavorites();
+      renderStats();
+    }
+    
+    function renderLibrary() {
+      let filteredSongs = currentSongs;
+      
+      if (currentFilter !== 'all') {
+        filteredSongs = filteredSongs.filter(song => song.sentiment === currentFilter);
+      }
+      
+      if (currentSearch) {
+        filteredSongs = filteredSongs.filter(song => 
+          song.title.toLowerCase().includes(currentSearch.toLowerCase()) ||
+          song.artist.toLowerCase().includes(currentSearch.toLowerCase())
+        );
+      }
+      
+      const gridView = document.getElementById('gridView');
+      const listView = document.getElementById('listView');
+      const emptyState = document.getElementById('emptyState');
+      
+      if (filteredSongs.length === 0) {
+        gridView.style.display = 'none';
+        listView.style.display = 'none';
+        emptyState.style.display = 'block';
+        return;
+      }
+      
+      emptyState.style.display = 'none';
+      
+      if (currentView === 'grid') {
+        gridView.style.display = 'grid';
+        listView.style.display = 'none';
+        gridView.innerHTML = filteredSongs.map(song => `
           <div class="song-card" data-id="${song.id}">
             <div class="album-cover" style="background: ${song.coverColor};">
               🎵
@@ -1419,10 +1152,10 @@
             </div>
           </div>
         `).join('');
-    } else {
-      gridView.style.display = 'none';
-      listView.style.display = 'block';
-      document.getElementById('songsList').innerHTML = filteredSongs.map((song, index) => `
+      } else {
+        gridView.style.display = 'none';
+        listView.style.display = 'block';
+        document.getElementById('songsList').innerHTML = filteredSongs.map((song, index) => `
           <div class="song-row" data-id="${song.id}">
             <div class="play-cell">
               <div class="song-number">${index + 1}</div>
@@ -1447,25 +1180,25 @@
             </div>
           </div>
         `).join('');
+      }
     }
-  }
-
-  function renderSearch() {
-    const searchResults = document.getElementById('searchResults');
-    const searchTerm = document.getElementById('searchInputPage').value.toLowerCase();
-
-    if (!searchTerm) {
-      searchResults.innerHTML = '<p style="color: #b3b3b3; text-align: center; padding: 40px;">Recherchez des chansons...</p>';
-      return;
-    }
-
-    const results = currentSongs.filter(song =>
-      song.title.toLowerCase().includes(searchTerm) ||
-      song.artist.toLowerCase().includes(searchTerm) ||
-      song.album.toLowerCase().includes(searchTerm)
-    );
-
-    searchResults.innerHTML = results.map(song => `
+    
+    function renderSearch() {
+      const searchResults = document.getElementById('searchResults');
+      const searchTerm = document.getElementById('searchInputPage').value.toLowerCase();
+      
+      if (!searchTerm) {
+        searchResults.innerHTML = '<p style="color: #b3b3b3; text-align: center; padding: 40px;">Recherchez des chansons...</p>';
+        return;
+      }
+      
+      const results = currentSongs.filter(song => 
+        song.title.toLowerCase().includes(searchTerm) ||
+        song.artist.toLowerCase().includes(searchTerm) ||
+        song.album.toLowerCase().includes(searchTerm)
+      );
+      
+      searchResults.innerHTML = results.map(song => `
         <div class="song-card" data-id="${song.id}">
           <div class="album-cover" style="background: ${song.coverColor};">🎵</div>
           <div class="song-info">
@@ -1474,13 +1207,13 @@
           </div>
         </div>
       `).join('');
-  }
-
-  function renderFavorites() {
-    const favoritesList = document.getElementById('favoritesList');
-    const favorites = currentSongs.filter(song => song.rating >= 4);
-
-    favoritesList.innerHTML = favorites.map(song => `
+    }
+    
+    function renderFavorites() {
+      const favoritesList = document.getElementById('favoritesList');
+      const favorites = currentSongs.filter(song => song.rating >= 4);
+      
+      favoritesList.innerHTML = favorites.map(song => `
         <div class="song-card" data-id="${song.id}">
           <div class="album-cover" style="background: ${song.coverColor};">🎵</div>
           <div class="song-info">
@@ -1489,26 +1222,26 @@
           </div>
         </div>
       `).join('');
-  }
-
-  function renderStats() {
-    const totalSongs = currentSongs.length;
-    const totalPlays = currentSongs.reduce((sum, song) => sum + song.plays, 0);
-    const avgRating = totalSongs > 0 ? (currentSongs.reduce((sum, song) => sum + song.rating, 0) / totalSongs).toFixed(1) : 0;
-
-    const sentimentCounts = {};
-    currentSongs.forEach(song => {
-      sentimentCounts[song.sentiment] = (sentimentCounts[song.sentiment] || 0) + 1;
-    });
-    const topSentiment = Object.keys(sentimentCounts).reduce((a, b) => sentimentCounts[a] > sentimentCounts[b] ? a : b, '-');
-
-    document.getElementById('totalSongs').textContent = totalSongs;
-    document.getElementById('totalPlays').textContent = totalPlays;
-    document.getElementById('avgRating').textContent = avgRating;
-    document.getElementById('topSentiment').textContent = topSentiment;
-
-    const topSongs = [...currentSongs].sort((a, b) => b.plays - a.plays).slice(0, 10);
-    document.getElementById('topSongsList').innerHTML = topSongs.map((song, index) => `
+    }
+    
+    function renderStats() {
+      const totalSongs = currentSongs.length;
+      const totalPlays = currentSongs.reduce((sum, song) => sum + song.plays, 0);
+      const avgRating = totalSongs > 0 ? (currentSongs.reduce((sum, song) => sum + song.rating, 0) / totalSongs).toFixed(1) : 0;
+      
+      const sentimentCounts = {};
+      currentSongs.forEach(song => {
+        sentimentCounts[song.sentiment] = (sentimentCounts[song.sentiment] || 0) + 1;
+      });
+      const topSentiment = Object.keys(sentimentCounts).reduce((a, b) => sentimentCounts[a] > sentimentCounts[b] ? a : b, '-');
+      
+      document.getElementById('totalSongs').textContent = totalSongs;
+      document.getElementById('totalPlays').textContent = totalPlays;
+      document.getElementById('avgRating').textContent = avgRating;
+      document.getElementById('topSentiment').textContent = topSentiment;
+      
+      const topSongs = [...currentSongs].sort((a, b) => b.plays - a.plays).slice(0, 10);
+      document.getElementById('topSongsList').innerHTML = topSongs.map((song, index) => `
         <div class="song-row">
           <div class="song-number">${index + 1}</div>
           <div class="song-title-cell">
@@ -1524,355 +1257,127 @@
           <div></div>
         </div>
       `).join('');
-  }
-
-  function renderLogs() {
-    const logsList = document.getElementById('logsList');
-    const emptyLogs = document.getElementById('emptyLogs');
-
-    if (activityLogs.length === 0) {
-      logsList.style.display = 'none';
-      emptyLogs.style.display = 'block';
-      return;
     }
-
-    logsList.style.display = 'block';
-    emptyLogs.style.display = 'none';
-
-    const logIcons = {
-      add: '➕',
-      delete: '🗑️',
-      play: '▶️',
-      search: '🔍',
-      filter: '🎯'
-    };
-
-    logsList.innerHTML = activityLogs.map(log => {
-      const timestamp = new Date(log.timestamp);
-      const now = new Date();
-      const diffMs = now - timestamp;
-      const diffMins = Math.floor(diffMs / 60000);
-      const diffHours = Math.floor(diffMs / 3600000);
-      const diffDays = Math.floor(diffMs / 86400000);
-
-      let timeStr;
-      if (diffMins < 1) timeStr = 'À l\'instant';
-      else if (diffMins < 60) timeStr = `Il y a ${diffMins} min`;
-      else if (diffHours < 24) timeStr = `Il y a ${diffHours}h`;
-      else timeStr = `Il y a ${diffDays}j`;
-
-      return `
-          <div class="log-item">
-            <div class="log-icon ${log.type}">
-              ${logIcons[log.type] || '📝'}
-            </div>
-            <div class="log-content">
-              <div class="log-header">
-                <div class="log-action">${log.action}</div>
-                <div class="log-time">${timeStr}</div>
-              </div>
-              <div class="log-details">${log.details}</div>
-            </div>
-          </div>
-        `;
-    }).join('');
-  }
-
-  async function deleteSong(songId) {
-    const song = currentSongs.find(s => s.id === songId);
-    if (!song) return;
-
-    const result = await window.dataSdk.delete(song);
-    if (result.isOk) {
-      addLog('delete', 'Chanson supprimée', `"<span class="log-song-title">${song.title}</span>" par ${song.artist} a été supprimée de la bibliothèque`);
-      showToast('Chanson supprimée');
-    } else {
-      showToast('Erreur lors de la suppression', 'error');
-    }
-  }
-
-  function showToast(message, type = 'success') {
-    const toast = document.getElementById('toast');
-    toast.className = `toast ${type} active`;
-    document.getElementById('toastMessage').textContent = message;
-    setTimeout(() => toast.classList.remove('active'), 3000);
-  }
-
-  // Navigation
-  document.querySelectorAll('.nav-item').forEach(btn => {
-    btn.addEventListener('click', () => {
-      document.querySelectorAll('.nav-item').forEach(b => b.classList.remove('active'));
-      btn.classList.add('active');
-
-      document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
-      const pageName = btn.dataset.page;
-      document.getElementById(pageName + 'Page').classList.add('active');
-      currentPage = pageName;
-    });
-  });
-
-  // Filter chips
-  document.querySelectorAll('.chip').forEach(chip => {
-    chip.addEventListener('click', () => {
-      document.querySelectorAll('.chip').forEach(c => c.classList.remove('active'));
-      chip.classList.add('active');
-      const newFilter = chip.dataset.filter;
-
-      if (newFilter !== currentFilter && newFilter !== 'all') {
-        addLog('filter', 'Filtre appliqué', `Affichage des chansons avec le sentiment "<span class="log-song-title">${newFilter}</span>"`);
+    
+    async function deleteSong(songId) {
+      const song = currentSongs.find(s => s.id === songId);
+      if (!song) return;
+      
+      const result = await window.dataSdk.delete(song);
+      if (result.isOk) {
+        showToast('Chanson supprimée');
+      } else {
+        showToast('Erreur lors de la suppression', 'error');
       }
-
-      currentFilter = newFilter;
+    }
+    
+    function showToast(message, type = 'success') {
+      const toast = document.getElementById('toast');
+      toast.className = `toast ${type} active`;
+      document.getElementById('toastMessage').textContent = message;
+      setTimeout(() => toast.classList.remove('active'), 3000);
+    }
+    
+    // Navigation
+    document.querySelectorAll('.nav-item').forEach(btn => {
+      btn.addEventListener('click', () => {
+        document.querySelectorAll('.nav-item').forEach(b => b.classList.remove('active'));
+        btn.classList.add('active');
+        
+        document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
+        const pageName = btn.dataset.page;
+        document.getElementById(pageName + 'Page').classList.add('active');
+        currentPage = pageName;
+      });
+    });
+    
+    // Filter chips
+    document.querySelectorAll('.chip').forEach(chip => {
+      chip.addEventListener('click', () => {
+        document.querySelectorAll('.chip').forEach(c => c.classList.remove('active'));
+        chip.classList.add('active');
+        currentFilter = chip.dataset.filter;
+        renderLibrary();
+      });
+    });
+    
+    // View toggle
+    document.querySelectorAll('.view-btn').forEach(btn => {
+      btn.addEventListener('click', () => {
+        document.querySelectorAll('.view-btn').forEach(b => b.classList.remove('active'));
+        btn.classList.add('active');
+        currentView = btn.dataset.view;
+        renderLibrary();
+      });
+    });
+    
+    // Search
+    document.getElementById('searchInput').addEventListener('input', (e) => {
+      currentSearch = e.target.value;
       renderLibrary();
     });
-  });
-
-  // View toggle
-  document.querySelectorAll('.view-btn').forEach(btn => {
-    btn.addEventListener('click', () => {
-      document.querySelectorAll('.view-btn').forEach(b => b.classList.remove('active'));
-      btn.classList.add('active');
-      currentView = btn.dataset.view;
-      renderLibrary();
+    
+    document.getElementById('searchInputPage').addEventListener('input', () => {
+      renderSearch();
     });
-  });
-
-  // Search
-  let searchTimeout;
-  document.getElementById('searchInput').addEventListener('input', (e) => {
-    currentSearch = e.target.value;
-    renderLibrary();
-
-    clearTimeout(searchTimeout);
-    if (currentSearch.length > 2) {
-      searchTimeout = setTimeout(() => {
-        addLog('search', 'Recherche effectuée', `Recherche de "<span class="log-song-title">${currentSearch}</span>"`);
-      }, 1000);
-    }
-  });
-
-  document.getElementById('searchInputPage').addEventListener('input', () => {
-    renderSearch();
-    const searchTerm = document.getElementById('searchInputPage').value;
-
-    clearTimeout(searchTimeout);
-    if (searchTerm.length > 2) {
-      searchTimeout = setTimeout(() => {
-        addLog('search', 'Recherche effectuée', `Recherche de "<span class="log-song-title">${searchTerm}</span>"`);
-      }, 1000);
-    }
-  });
-
-  // Modal
-  document.getElementById('addSongBtn').addEventListener('click', () => {
-    document.getElementById('addModal').classList.add('active');
-    document.getElementById('addSongForm').reset();
-  });
-
-  document.getElementById('closeModal').addEventListener('click', () => {
-    document.getElementById('addModal').classList.remove('active');
-  });
-
-  document.getElementById('cancelBtn').addEventListener('click', () => {
-    document.getElementById('addModal').classList.remove('active');
-  });
-
-  document.getElementById('addSongForm').addEventListener('submit', async (e) => {
-    e.preventDefault();
-
-    if (currentSongs.length >= 999) {
-      showToast('Limite de 999 chansons atteinte', 'error');
-      return;
-    }
-
-    const title = document.getElementById('songTitle').value;
-    const artist = document.getElementById('songArtist').value;
-    const album = document.getElementById('songAlbum').value || 'Single';
-
-    const minutes = Math.floor(Math.random() * 3) + 2;
-    const seconds = Math.floor(Math.random() * 60);
-    const duration = `${minutes}:${seconds.toString().padStart(2, '0')}`;
-
-    const newSong = {
-      id: generateId(),
-      title,
-      artist,
-      album,
-      coverColor: generateColor(),
-      sentiment: detectSentiment(title, artist),
-      rating: Math.floor(Math.random() * 3) + 3,
-      duration,
-      plays: 0,
-      addedAt: new Date().toISOString()
-    };
-
-    document.getElementById('submitBtn').disabled = true;
-    const result = await window.dataSdk.create(newSong);
-
-    if (result.isOk) {
-      addLog('add', 'Nouvelle chanson ajoutée', `"<span class="log-song-title">${newSong.title}</span>" par ${newSong.artist} a été ajoutée à la bibliothèque`);
-      showToast('Chanson ajoutée !');
+    
+    // Modal
+    document.getElementById('addSongBtn').addEventListener('click', () => {
+      document.getElementById('addModal').classList.add('active');
+      document.getElementById('addSongForm').reset();
+    });
+    
+    document.getElementById('closeModal').addEventListener('click', () => {
       document.getElementById('addModal').classList.remove('active');
-    } else {
-      showToast('Erreur lors de l\'ajout', 'error');
-    }
-
-    document.getElementById('submitBtn').disabled = false;
-  });
-
-  // Clear logs button
-  document.getElementById('clearLogsBtn').addEventListener('click', () => {
-    if (activityLogs.length === 0) return;
-
-    const confirmDiv = document.createElement('div');
-    confirmDiv.style.cssText = 'position: fixed; top: 50%; left: 50%; transform: translate(-50%, -50%); background: #282828; padding: 24px; border-radius: 12px; z-index: 10000; box-shadow: 0 8px 32px rgba(0,0,0,0.5); max-width: 400px;';
-    confirmDiv.innerHTML = `
-        <h3 style="margin-bottom: 12px; font-size: 18px;">Effacer l'historique ?</h3>
-        <p style="color: #b3b3b3; margin-bottom: 20px; font-size: 14px;">Cette action est irréversible.</p>
-        <div style="display: flex; gap: 12px;">
-          <button id="confirmClear" style="flex: 1; padding: 10px; background: #e22134; color: white; border: none; border-radius: 24px; font-weight: 700; cursor: pointer;">Effacer</button>
-          <button id="cancelClear" style="flex: 1; padding: 10px; background: transparent; border: 1px solid #535353; color: white; border-radius: 24px; font-weight: 700; cursor: pointer;">Annuler</button>
-        </div>
-      `;
-    document.body.appendChild(confirmDiv);
-
-    document.getElementById('confirmClear').addEventListener('click', () => {
-      activityLogs = [];
-      saveLogs();
-      renderLogs();
-      showToast('Historique effacé');
-      document.body.removeChild(confirmDiv);
     });
-
-    document.getElementById('cancelClear').addEventListener('click', () => {
-      document.body.removeChild(confirmDiv);
+    
+    document.getElementById('cancelBtn').addEventListener('click', () => {
+      document.getElementById('addModal').classList.remove('active');
     });
-  });
-
-  // Login button handler
-  document.getElementById('loginBtn').addEventListener('click', () => {
-    if (isLoggedIn) {
-      // Déconnexion
-      const confirmDiv = document.createElement('div');
-      confirmDiv.style.cssText = 'position: fixed; top: 50%; left: 50%; transform: translate(-50%, -50%); background: #282828; padding: 24px; border-radius: 12px; z-index: 10000; box-shadow: 0 8px 32px rgba(0,0,0,0.5); max-width: 400px;';
-      confirmDiv.innerHTML = `
-          <h3 style="margin-bottom: 12px; font-size: 18px;">Se déconnecter ?</h3>
-          <p style="color: #b3b3b3; margin-bottom: 20px; font-size: 14px;">Vous allez être déconnecté de votre compte.</p>
-          <div style="display: flex; gap: 12px;">
-            <button id="confirmLogout" style="flex: 1; padding: 10px; background: #e22134; color: white; border: none; border-radius: 24px; font-weight: 700; cursor: pointer;">Se déconnecter</button>
-            <button id="cancelLogout" style="flex: 1; padding: 10px; background: transparent; border: 1px solid #535353; color: white; border-radius: 24px; font-weight: 700; cursor: pointer;">Annuler</button>
-          </div>
-        `;
-      document.body.appendChild(confirmDiv);
-
-      document.getElementById('confirmLogout').addEventListener('click', () => {
-        isLoggedIn = false;
-        addLog('delete', 'Déconnexion', `<span class="log-song-title">${currentUser.name}</span> s'est déconnecté`);
-        currentUser = null;
-        saveLoginState();
-        updateLoginButton();
-        showToast('Déconnecté avec succès');
-        document.body.removeChild(confirmDiv);
-      });
-
-      document.getElementById('cancelLogout').addEventListener('click', () => {
-        document.body.removeChild(confirmDiv);
-      });
-    } else {
-      // Connexion
-      const loginModal = document.createElement('div');
-      loginModal.className = 'modal active';
-      loginModal.innerHTML = `
-          <div class="modal-content">
-            <div class="modal-header">
-              <h2>Se connecter</h2>
-              <button class="btn-close" id="closeLoginModal">
-                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                  <line x1="18" y1="6" x2="6" y2="18"></line>
-                  <line x1="6" y1="6" x2="18" y2="18"></line>
-                </svg>
-              </button>
-            </div>
-
-            <form id="loginForm">
-              <div class="form-group">
-                <label for="userName">Nom d'utilisateur *</label>
-                <input type="text" id="userName" required placeholder="Entrez votre nom">
-              </div>
-
-              <div class="form-group">
-                <label for="userAvatar">Choisissez un avatar</label>
-                <div style="display: grid; grid-template-columns: repeat(5, 1fr); gap: 12px; margin-top: 12px;">
-                  <button type="button" class="avatar-choice" data-avatar="👤" style="padding: 16px; background: #3e3e3e; border: 2px solid transparent; border-radius: 12px; font-size: 32px; cursor: pointer; transition: all 0.2s;">👤</button>
-                  <button type="button" class="avatar-choice" data-avatar="🎵" style="padding: 16px; background: #3e3e3e; border: 2px solid transparent; border-radius: 12px; font-size: 32px; cursor: pointer; transition: all 0.2s;">🎵</button>
-                  <button type="button" class="avatar-choice" data-avatar="🎸" style="padding: 16px; background: #3e3e3e; border: 2px solid transparent; border-radius: 12px; font-size: 32px; cursor: pointer; transition: all 0.2s;">🎸</button>
-                  <button type="button" class="avatar-choice" data-avatar="🎤" style="padding: 16px; background: #3e3e3e; border: 2px solid transparent; border-radius: 12px; font-size: 32px; cursor: pointer; transition: all 0.2s;">🎤</button>
-                  <button type="button" class="avatar-choice" data-avatar="🎧" style="padding: 16px; background: #3e3e3e; border: 2px solid transparent; border-radius: 12px; font-size: 32px; cursor: pointer; transition: all 0.2s;">🎧</button>
-                  <button type="button" class="avatar-choice" data-avatar="🎹" style="padding: 16px; background: #3e3e3e; border: 2px solid transparent; border-radius: 12px; font-size: 32px; cursor: pointer; transition: all 0.2s;">🎹</button>
-                  <button type="button" class="avatar-choice" data-avatar="🎺" style="padding: 16px; background: #3e3e3e; border: 2px solid transparent; border-radius: 12px; font-size: 32px; cursor: pointer; transition: all 0.2s;">🎺</button>
-                  <button type="button" class="avatar-choice" data-avatar="🥁" style="padding: 16px; background: #3e3e3e; border: 2px solid transparent; border-radius: 12px; font-size: 32px; cursor: pointer; transition: all 0.2s;">🥁</button>
-                  <button type="button" class="avatar-choice" data-avatar="🎻" style="padding: 16px; background: #3e3e3e; border: 2px solid transparent; border-radius: 12px; font-size: 32px; cursor: pointer; transition: all 0.2s;">🎻</button>
-                  <button type="button" class="avatar-choice" data-avatar="🎼" style="padding: 16px; background: #3e3e3e; border: 2px solid transparent; border-radius: 12px; font-size: 32px; cursor: pointer; transition: all 0.2s;">🎼</button>
-                </div>
-              </div>
-
-              <div class="modal-actions">
-                <button type="button" class="btn-secondary" id="cancelLogin">Annuler</button>
-                <button type="submit" class="btn-primary-full">Se connecter</button>
-              </div>
-            </form>
-          </div>
-        `;
-      document.body.appendChild(loginModal);
-
-      let selectedAvatar = '👤';
-
-      document.querySelectorAll('.avatar-choice').forEach(btn => {
-        if (btn.dataset.avatar === selectedAvatar) {
-          btn.style.borderColor = '#1db954';
-          btn.style.background = 'rgba(29, 185, 84, 0.2)';
-        }
-
-        btn.addEventListener('click', () => {
-          document.querySelectorAll('.avatar-choice').forEach(b => {
-            b.style.borderColor = 'transparent';
-            b.style.background = '#3e3e3e';
-          });
-          btn.style.borderColor = '#1db954';
-          btn.style.background = 'rgba(29, 185, 84, 0.2)';
-          selectedAvatar = btn.dataset.avatar;
-        });
-      });
-
-      document.getElementById('closeLoginModal').addEventListener('click', () => {
-        document.body.removeChild(loginModal);
-      });
-
-      document.getElementById('cancelLogin').addEventListener('click', () => {
-        document.body.removeChild(loginModal);
-      });
-
-      document.getElementById('loginForm').addEventListener('submit', (e) => {
-        e.preventDefault();
-        const userName = document.getElementById('userName').value.trim();
-
-        if (userName) {
-          isLoggedIn = true;
-          currentUser = {
-            name: userName,
-            avatar: selectedAvatar
-          };
-          saveLoginState();
-          updateLoginButton();
-          addLog('add', 'Connexion réussie', `<span class="log-song-title">${userName}</span> s'est connecté`);
-          showToast(`Bienvenue ${userName} !`);
-          document.body.removeChild(loginModal);
-        }
-      });
-    }
-  });
-
-  initApp();
-</script>
-<script>(function(){function c(){var b=a.contentDocument||a.contentWindow.document;if(b){var d=b.createElement('script');d.innerHTML="window.__CF$cv$params={r:'9a75310375f61d43',t:'MTc2NDYxOTQ0My4wMDAwMDA='};var a=document.createElement('script');a.nonce='';a.src='/cdn-cgi/challenge-platform/scripts/jsd/main.js';document.getElementsByTagName('head')[0].appendChild(a);";b.getElementsByTagName('head')[0].appendChild(d)}}if(document.body){var a=document.createElement('iframe');a.height=1;a.width=1;a.style.position='absolute';a.style.top=0;a.style.left=0;a.style.border='none';a.style.visibility='hidden';document.body.appendChild(a);if('loading'!==document.readyState)c();else if(window.addEventListener)document.addEventListener('DOMContentLoaded',c);else{var e=document.onreadystatechange||function(){};document.onreadystatechange=function(b){e(b);'loading'!==document.readyState&&(document.onreadystatechange=e,c())}}}})();</script></body>
+    
+    document.getElementById('addSongForm').addEventListener('submit', async (e) => {
+      e.preventDefault();
+      
+      if (currentSongs.length >= 999) {
+        showToast('Limite de 999 chansons atteinte', 'error');
+        return;
+      }
+      
+      const title = document.getElementById('songTitle').value;
+      const artist = document.getElementById('songArtist').value;
+      const album = document.getElementById('songAlbum').value || 'Single';
+      
+      const minutes = Math.floor(Math.random() * 3) + 2;
+      const seconds = Math.floor(Math.random() * 60);
+      const duration = `${minutes}:${seconds.toString().padStart(2, '0')}`;
+      
+      const newSong = {
+        id: generateId(),
+        title,
+        artist,
+        album,
+        coverColor: generateColor(),
+        sentiment: detectSentiment(title, artist),
+        rating: Math.floor(Math.random() * 3) + 3,
+        duration,
+        plays: 0,
+        addedAt: new Date().toISOString()
+      };
+      
+      document.getElementById('submitBtn').disabled = true;
+      const result = await window.dataSdk.create(newSong);
+      
+      if (result.isOk) {
+        showToast('Chanson ajoutée !');
+        document.getElementById('addModal').classList.remove('active');
+      } else {
+        showToast('Erreur lors de l\'ajout', 'error');
+      }
+      
+      document.getElementById('submitBtn').disabled = false;
+    });
+    
+    initApp();
+  </script>
+ <script>(function(){function c(){var b=a.contentDocument||a.contentWindow.document;if(b){var d=b.createElement('script');d.innerHTML="window.__CF$cv$params={r:'9ac78ba6b30ee3cc',t:'MTc2NTQ4Mjk4OC4wMDAwMDA='};var a=document.createElement('script');a.nonce='';a.src='/cdn-cgi/challenge-platform/scripts/jsd/main.js';document.getElementsByTagName('head')[0].appendChild(a);";b.getElementsByTagName('head')[0].appendChild(d)}}if(document.body){var a=document.createElement('iframe');a.height=1;a.width=1;a.style.position='absolute';a.style.top=0;a.style.left=0;a.style.border='none';a.style.visibility='hidden';document.body.appendChild(a);if('loading'!==document.readyState)c();else if(window.addEventListener)document.addEventListener('DOMContentLoaded',c);else{var e=document.onreadystatechange||function(){};document.onreadystatechange=function(b){e(b);'loading'!==document.readyState&&(document.onreadystatechange=e,c())}}}})();</script></body>
 </html>

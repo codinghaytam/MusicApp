@@ -8,9 +8,11 @@ import ffmpeg from 'fluent-ffmpeg';
 import fs from 'fs';
 import path from 'path';
 import { fileURLToPath } from 'url';
+import { spawnSync } from 'child_process';
 import logger from './logger.js';
 import * as whisperService from './whisperService.js';
 import { pipeline } from '@xenova/transformers';
+import { fetchLibraryStats } from './stats/libraryStats.js';
 // --- Sentiment pipeline (Transformers.js) ---
 let emotionPipeline = null;
 async function getEmotionPipeline() {
@@ -22,6 +24,25 @@ async function getEmotionPipeline() {
     // multi_label is inferred for compatible models
   });
   return emotionPipeline;
+}
+
+function extractKeywordsWithKeyBERT(text) {
+  const trimmed = (text || '').trim();
+  if (!trimmed) return [];
+  try {
+    const result = spawnSync('python', [KEYBERT_SCRIPT], {
+      input: trimmed,
+      encoding: 'utf-8',
+    });
+    if (result.status !== 0) {
+      throw new Error(result.stderr || 'KeyBERT process failed');
+    }
+    const payload = (result.stdout || '').trim() || '[]';
+    return JSON.parse(payload);
+  } catch (error) {
+    logger.warn('KeyBERT keyword extraction failed; fallback to heuristics.', { error: error.message });
+    return trimmed.split(/\s+/).slice(0, 5);
+  }
 }
 
 // --- Recréer __dirname en ES Modules ---
@@ -49,6 +70,8 @@ const esClient = new Client({
 
 const ES_INDEX = 'audio_analysis';
 const upload = multer({ dest: 'uploads/' });
+const KEYBERT_SCRIPT = path.join(__dirname, 'keyword_service.py');
+const MIN_EMOTION_SCORE = 0.3;
 
 if (!fs.existsSync('uploads')) {
   fs.mkdirSync('uploads');
@@ -93,9 +116,8 @@ async function ensureIndex() {
           properties: {
             fileName: { type: 'text' },
             transcription: { type: 'text' },
-            emotion: { type: 'keyword' },
+            transcriptionVector: { type: 'dense_vector', dims: 384, index: true, similarity: 'cosine' },
             confidence: { type: 'integer' },
-            icon: { type: 'keyword' },
             keywords: { type: 'text' },
             timestamp: { type: 'date' },
             trackId: { type: 'keyword' },
@@ -106,6 +128,7 @@ async function ensureIndex() {
             duration: { type: 'float' },
             bitRate: { type: 'integer' },
             emotions: { type: 'keyword' },
+            primaryEmotions: { type: 'keyword' },
             scores: { type: 'object' }
           }
         }
@@ -238,11 +261,10 @@ async function analyzeEmotion(text) {
   const trimmed = (text || '').trim();
   if (!trimmed) {
     return {
-      emotion: 'instrumental',
       confidence: 100,
-      icon: 'Music',
       keywords: [],
       emotions: [],
+      primaryEmotions: [],
       scores: {}
     };
   }
@@ -258,35 +280,24 @@ async function analyzeEmotion(text) {
     }
   });
 
-  // Apply user rules: remove neutral entirely, keep scores > 0.5 only
-  const allowedLabels = ['Anger','Anticipation','Disgust','Fear','Joy','Optimism','Sadness','Surprise'];
+  // Apply user rules: focus on Ekman emotions, keep scores above threshold
+  const allowedLabels = ['Anger','Disgust','Fear','Joy','Sadness','Surprise'];
   const filtered = Object.entries(scoresMap)
-    .filter(([label, score]) => allowedLabels.includes(label) && score > 0.5)
+    .filter(([label, score]) => allowedLabels.includes(label) && score >= MIN_EMOTION_SCORE)
     .sort((a, b) => b[1] - a[1]);
 
   const emotions = filtered.map(([label]) => label);
   const scores = Object.fromEntries(filtered);
+  const primaryEmotions = emotions;
+  let confidence = emotions.length ? Math.round((scores[emotions[0]] || 0) * 100) : 0;
 
-  // Primary emotion is the highest score if any
-  let emotion = emotions[0] || '';
-  let confidence = emotion ? Math.round((scores[emotion] || 0) * 100) : 0;
+  const keywords = extractKeywordsWithKeyBERT(trimmed);
 
-  // Icons mapping (lucide) for main emotions
-  const iconMap = {
-    Joy: 'Smile',
-    Sadness: 'Frown',
-    Anger: 'Angry',
-    Fear: 'AlertTriangle',
-    Anticipation: 'Forward',
-    Optimism: 'Sun',
-    Disgust: 'Ban',
-    Surprise: 'Zap'
-  };
-  const icon = emotion ? (iconMap[emotion] || 'Music') : 'Music';
+  if (!emotions.length) {
+    logger.warn('No emotions above threshold', { sample: filtered.slice(0, 3) });
+  }
 
-  const keywords = trimmed.split(/\s+/).slice(0, 5);
-
-  return { emotion, confidence, icon, keywords, emotions, scores };
+  return { confidence, keywords, emotions, primaryEmotions, scores };
 }
 
 /**
@@ -349,7 +360,7 @@ app.get('/api/search', async (req, res) => {
       query: {
         multi_match: {
           query: query,
-        fields: ['transcription', 'emotion', 'fileName', 'keywords']        }
+        fields: ['transcription', 'primaryEmotions', 'fileName', 'keywords']        }
       }
     });
     const results = response.hits.hits.map(hit => hit._source);
@@ -365,35 +376,38 @@ app.get('/api/search', async (req, res) => {
  */
 app.get('/api/stats', async (req, res) => {
   try {
-    const response = await esClient.search({
-      index: ES_INDEX,
-      size: 0,
-      aggs: {
-        emotions_count: { terms: { field: 'emotion.keyword' } },
-        total_docs: { value_count: { field: '_id' } }
-      }
-    });
-
-    const stats = {
-      total: response.aggregations.total_docs.value,
-      emotions: {}
-    };
-    response.aggregations.emotions_count.buckets.forEach(bucket => {
-      stats.emotions[bucket.key] = bucket.doc_count;
-    });
-    res.json(stats);
-  } catch (error) {
-    // Gère l'erreur si l'index n'existe pas encore
-    if (error.meta && error.meta.body.status === 404) {
-      logger.warn("Avertissement : L'index 'audio_analysis' n'existe pas encore. Renvoi de stats vides.");
-      res.json({
-        total: 0,
-        emotions: {}
+    // Prefer the library helper, but add a robust fallback to avoid _id fielddata issues
+    try {
+      const stats = await fetchLibraryStats(esClient, ES_INDEX);
+      return res.json(stats);
+    } catch (e) {
+      // Fallback path: compute totals via count API and terms via keyword subfield
+      const countResp = await esClient.count({ index: ES_INDEX });
+      const total = (countResp.count ?? 0);
+      const aggResp = await esClient.search({
+        index: ES_INDEX,
+        size: 0,
+        aggs: {
+          emotions_count: { terms: { field: 'primaryEmotions', size: 20 } },
+          avg_confidence: { avg: { field: 'confidence' } }
+        }
       });
-    } else {
-      logger.error('Erreur de statistiques ES:', { error });
-      res.status(500).json({ success: false, message: 'Erreur de statistiques' });
+      const emotionBuckets = aggResp.aggregations?.emotions_count?.buckets || [];
+      const emotions = {};
+      for (const b of emotionBuckets) {
+        if (b && (b.key || b.key === 0)) emotions[b.key] = b.doc_count;
+      }
+      const avgConfidence = aggResp.aggregations?.avg_confidence?.value || 0;
+      const topEmotion = emotionBuckets.length ? emotionBuckets[0].key : '';
+      return res.json({ total, emotions, averageConfidence: Number(avgConfidence.toFixed(2)), topEmotion });
     }
+  } catch (error) {
+    if (error.meta && error.meta.body && error.meta.body.status === 404) {
+      logger.warn("Avertissement : L'index 'audio_analysis' n'existe pas encore. Renvoi de stats vides.");
+      return res.json({ total: 0, emotions: {}, averageConfidence: 0, topEmotion: '' });
+    }
+    logger.error('Erreur de statistiques ES:', { error });
+    res.status(500).json({ success: false, message: 'Erreur de statistiques' });
   }
 });
 

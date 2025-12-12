@@ -1,13 +1,16 @@
-import React, { createContext, useContext, useState, useEffect } from 'react';
+import React, { createContext, useContext, useState, useEffect, useCallback } from 'react';
 
 const SongsContext = createContext(null);
 
 const API_BASE = 'http://localhost:3000/api';
+const DEFAULT_STATS = { total: 0, emotions: {}, averageConfidence: 0, topEmotion: '' };
 
 export function SongsProvider({ children }) {
   const [songs, setSongs] = useState([]);
   const [librarySearch, setLibrarySearch] = useState('');
   const [loading, setLoading] = useState(false);
+  const [stats, setStats] = useState(DEFAULT_STATS);
+  const [statsLoading, setStatsLoading] = useState(false);
 
   // Fetch songs from Elasticsearch on mount
   useEffect(() => {
@@ -99,16 +102,26 @@ export function SongsProvider({ children }) {
     }
   };
 
-  const getStats = async () => {
+  const refreshStats = useCallback(async () => {
     try {
+      setStatsLoading(true);
       const response = await fetch(`${API_BASE}/stats`);
       if (!response.ok) throw new Error('Failed to fetch stats');
-      return await response.json();
+      const data = await response.json();
+      setStats(data || DEFAULT_STATS);
+      return data || DEFAULT_STATS;
     } catch (error) {
       console.error('Error fetching stats:', error);
-      return { total: 0, emotions: {} };
+      setStats(DEFAULT_STATS);
+      return DEFAULT_STATS;
+    } finally {
+      setStatsLoading(false);
     }
-  };
+  }, []);
+
+  useEffect(() => {
+    refreshStats();
+  }, [refreshStats]);
 
   const value = {
     songs,
@@ -117,7 +130,9 @@ export function SongsProvider({ children }) {
     deleteSong,
     updateSong,
     searchSongs,
-    getStats,
+    stats,
+    statsLoading,
+    refreshStats,
     fetchSongs,
     librarySearch,
     setLibrarySearch,
