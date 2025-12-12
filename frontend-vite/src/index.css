@@ -25,7 +25,7 @@ code {
   --popover: 0 0% 9%;
   --popover-foreground: 0 0% 100%;
   --primary: 142.1 76.2% 36.3%;
-  --primary-foreground: 0 0% 100%;
+  --primary-foreground: 0 0% 0%;
   --secondary: 0 0% 15%;
   --secondary-foreground: 0 0% 100%;
   --muted: 0 0% 15%;
@@ -43,6 +43,23 @@ code {
 .dark {
   --background: 0 0% 0%;
   --foreground: 0 0% 100%;
+  --card: 0 0% 9%;
+  --card-foreground: 0 0% 100%;
+  --popover: 0 0% 9%;
+  --popover-foreground: 0 0% 100%;
+  --primary: 142.1 76.2% 36.3%;
+  --primary-foreground: 0 0% 0%;
+  --secondary: 0 0% 15%;
+  --secondary-foreground: 0 0% 100%;
+  --muted: 0 0% 15%;
+  --muted-foreground: 0 0% 65%;
+  --accent: 142.1 76.2% 36.3%;
+  --accent-foreground: 0 0% 0%;
+  --destructive: 0 84.2% 60.2%;
+  --destructive-foreground: 0 0% 100%;
+  --border: 0 0% 20%;
+  --input: 0 0% 20%;
+  --ring: 142.1 76.2% 36.3%;
 }
 
 body {
@@ -209,6 +226,144 @@ body {
   body {
     @apply bg-background text-foreground;
   }
+}
+
+/* Template Styles */
+.filter-chips {
+  @apply flex gap-2 flex-wrap mb-6;
+}
+
+.chip {
+  @apply px-4 py-2 bg-neutral-900 border border-neutral-800 rounded-full text-sm font-semibold cursor-pointer transition-all text-neutral-400 hover:bg-neutral-800 hover:text-white;
+}
+
+.chip.active {
+  @apply bg-emerald-500 text-black border-emerald-500;
+}
+
+.view-toggle {
+  @apply flex gap-1 bg-neutral-900 p-1 rounded-lg;
+}
+
+.view-btn {
+  @apply px-4 py-2 bg-transparent border-none rounded-md cursor-pointer transition-all text-neutral-400 text-sm font-semibold hover:text-white;
+}
+
+.view-btn.active {
+  @apply bg-neutral-800 text-white;
+}
+
+.songs-grid {
+  @apply grid gap-6;
+  grid-template-columns: repeat(auto-fill, minmax(180px, 1fr));
+}
+
+.song-card {
+  @apply bg-neutral-900 p-4 rounded-lg cursor-pointer transition-all relative overflow-hidden hover:bg-neutral-800 hover:-translate-y-1;
+}
+
+.album-cover {
+  @apply w-full rounded-lg mb-4 relative overflow-hidden flex items-center justify-center;
+  aspect-ratio: 1;
+}
+
+.song-info h3 {
+  @apply text-base font-bold mb-1 overflow-hidden whitespace-nowrap text-ellipsis;
+}
+
+.song-info .artist {
+  @apply text-sm text-neutral-400 overflow-hidden whitespace-nowrap text-ellipsis;
+}
+
+.songs-list {
+  @apply bg-transparent rounded-lg;
+}
+
+.list-header {
+  @apply grid gap-4 px-4 py-3 border-b border-neutral-800 text-neutral-400 text-xs font-semibold uppercase tracking-wider;
+  grid-template-columns: 40px 1fr 1fr 120px 80px 40px;
+}
+
+.song-row {
+  @apply grid gap-4 px-4 py-3 rounded cursor-pointer transition-all items-center hover:bg-neutral-900;
+  grid-template-columns: 40px 1fr 1fr 120px 80px 40px;
+}
+
+.song-row.playing {
+  @apply bg-neutral-900;
+}
+
+.song-number {
+  @apply text-neutral-400 text-sm text-center;
+}
+
+.song-row:hover .song-number {
+  @apply hidden;
+}
+
+.play-cell {
+  @apply relative;
+}
+
+.song-title-cell {
+  @apply flex items-center gap-3;
+}
+
+.mini-cover {
+  @apply w-10 h-10 rounded flex items-center justify-center flex-shrink-0 bg-gradient-to-br from-emerald-500 to-emerald-600;
+}
+
+.title-info h4 {
+  @apply text-sm font-medium mb-0.5 text-white;
+}
+
+.title-info p {
+  @apply text-xs text-neutral-400;
+}
+
+.album-cell {
+  @apply text-neutral-400 text-sm;
+}
+
+.duration-cell {
+  @apply text-neutral-400 text-sm;
+}
+
+.plays-cell {
+  @apply text-neutral-400 text-sm text-center;
+}
+
+.actions-cell {
+  @apply flex justify-center;
+}
+
+.btn-icon {
+  @apply bg-transparent border-none cursor-pointer p-2 rounded-full transition-all text-neutral-400 inline-flex items-center justify-center hover:bg-neutral-800 hover:text-white;
+}
+
+.btn-icon svg {
+  @apply w-5 h-5 stroke-current;
+}
+
+.stats-grid {
+  @apply grid gap-4 mb-8;
+  grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+}
+
+.stat-card {
+  @apply bg-neutral-900 p-6 rounded-xl;
+}
+
+.stat-value {
+  @apply text-3xl font-bold mb-1 bg-gradient-to-r from-emerald-500 to-emerald-400 bg-clip-text text-transparent;
+}
+
+.stat-label {
+  @apply text-sm text-neutral-400 font-semibold;
+}
+
+.nav-divider {
+  @apply h-px bg-neutral-800 my-4;
 }
 
 .play-overlay {

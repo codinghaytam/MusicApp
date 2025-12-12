@@ -10,6 +10,19 @@ import path from 'path';
 import { fileURLToPath } from 'url';
 import logger from './logger.js';
 import * as whisperService from './whisperService.js';
+import { pipeline } from '@xenova/transformers';
+// --- Sentiment pipeline (Transformers.js) ---
+let emotionPipeline = null;
+async function getEmotionPipeline() {
+  if (emotionPipeline) return emotionPipeline;
+  // Load multi-label text classification model
+  emotionPipeline = await pipeline('text-classification', 'songhieng/khmer-xlmr-base-sentimental-multi-label', {
+    // Enable multi-label for independent scores across classes
+    // Transformers.js uses "topk" and returns array of {label, score}
+    // multi_label is inferred for compatible models
+  });
+  return emotionPipeline;
+}
 
 // --- Recréer __dirname en ES Modules ---
 const __filename = fileURLToPath(import.meta.url);
@@ -30,7 +43,7 @@ app.use(express.json());
 const esClient = new Client({
   node: 'http://localhost:9200',
   auth: {
-    apiKey: 'QnFmUTBab0JFNXQ3QUhYSnE2UjA6d3FvYkxXTGhUQW1NYVRHMllKZnZuZw=='
+    apiKey: 'ekozdERwc0JCWHN0ZEo0X0VtVTU6OUNLU3BYNVRHN3d5VkxUdEVHWWR6dw=='
   }
 });
 
@@ -84,7 +97,16 @@ async function ensureIndex() {
             confidence: { type: 'integer' },
             icon: { type: 'keyword' },
             keywords: { type: 'text' },
-            timestamp: { type: 'date' }
+            timestamp: { type: 'date' },
+            trackId: { type: 'keyword' },
+            title: { type: 'text' },
+            artist: { type: 'text' },
+            album: { type: 'text' },
+            genre: { type: 'keyword' },
+            duration: { type: 'float' },
+            bitRate: { type: 'integer' },
+            emotions: { type: 'keyword' },
+            scores: { type: 'object' }
           }
         }
       });
@@ -210,35 +232,61 @@ async function transcribeAudio(audioFilePath) {
 
 
 async function analyzeEmotion(text) {
-  logger.info('Analyse NLP des émotions (simplifiée)...');
+  logger.info('Analyse des émotions via Transformers.js (multi-label)...');
 
-  // Simple heuristic sentiment analysis as a placeholder, no heavy model
-  const lower = text.toLowerCase();
-  let emotion = 'neutre';
-  let icon = '😐';
-  let confidence = 60;
-
-  if (/(heureux|joyeux|content|super|génial)/.test(lower)) {
-    emotion = 'joyeux';
-    icon = '😊';
-    confidence = 80;
-  } else if (/(triste|déprimé|malheureux|chagrin)/.test(lower)) {
-    emotion = 'triste';
-    icon = '😢';
-    confidence = 80;
-  } else if (/(énervé|furieux|colère|fâché)/.test(lower)) {
-    emotion = 'colère';
-    icon = '😠';
-    confidence = 75;
-  } else if (/(peur|angoissé|stressé|inquiet)/.test(lower)) {
-    emotion = 'peur';
-    icon = '😨';
-    confidence = 75;
+  // Rule: if transcription empty, mark as instrumental
+  const trimmed = (text || '').trim();
+  if (!trimmed) {
+    return {
+      emotion: 'instrumental',
+      confidence: 100,
+      icon: 'Music',
+      keywords: [],
+      emotions: [],
+      scores: {}
+    };
   }
 
-  const keywords = text.split(/\s+/).slice(0, 5);
+  // Use local Transformers.js pipeline
+  const classifier = await getEmotionPipeline();
+  const outputs = await classifier(trimmed, { topk: 8 });
+  const scoresMap = {};
+  // outputs is array of { label, score }
+  (Array.isArray(outputs) ? outputs : [outputs]).forEach(item => {
+    if (item && item.label && typeof item.score === 'number') {
+      scoresMap[item.label] = item.score;
+    }
+  });
 
-  return { emotion, confidence, icon, keywords };
+  // Apply user rules: remove neutral entirely, keep scores > 0.5 only
+  const allowedLabels = ['Anger','Anticipation','Disgust','Fear','Joy','Optimism','Sadness','Surprise'];
+  const filtered = Object.entries(scoresMap)
+    .filter(([label, score]) => allowedLabels.includes(label) && score > 0.5)
+    .sort((a, b) => b[1] - a[1]);
+
+  const emotions = filtered.map(([label]) => label);
+  const scores = Object.fromEntries(filtered);
+
+  // Primary emotion is the highest score if any
+  let emotion = emotions[0] || '';
+  let confidence = emotion ? Math.round((scores[emotion] || 0) * 100) : 0;
+
+  // Icons mapping (lucide) for main emotions
+  const iconMap = {
+    Joy: 'Smile',
+    Sadness: 'Frown',
+    Anger: 'Angry',
+    Fear: 'AlertTriangle',
+    Anticipation: 'Forward',
+    Optimism: 'Sun',
+    Disgust: 'Ban',
+    Surprise: 'Zap'
+  };
+  const icon = emotion ? (iconMap[emotion] || 'Music') : 'Music';
+
+  const keywords = trimmed.split(/\s+/).slice(0, 5);
+
+  return { emotion, confidence, icon, keywords, emotions, scores };
 }
 
 /**
@@ -362,11 +410,21 @@ Promise.all([
         return false;
       }
     })(),
+    (async () => {
+      try {
+        await getEmotionPipeline();
+        logger.info('Transformers.js sentiment model initialisé.');
+        return true;
+      } catch (e) {
+        logger.warn('Initialisation du modèle de sentiment a échoué.', { error: e.message });
+        return false;
+      }
+    })(),
     ensureIndex(),
 ]).then(() => {
     app.listen(port, () => {
         logger.info(`Serveur backend démarré sur http://localhost:${port}`);
-        logger.info("Modèle Whisper (Xenova/whisper-tiny) prêt ou en mode dégradé. ES routes opérationnelles.");
+        logger.info("Modèles prêts: Whisper (Xenova/whisper-tiny) et Sentiment (Transformers.js). ES routes opérationnelles.");
     });
 }).catch(err => {
     logger.error("Échec du démarrage du serveur.", { err });

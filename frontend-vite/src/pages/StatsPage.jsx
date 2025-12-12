@@ -1,114 +1,111 @@
-import React, { useMemo } from 'react';
+import React, { useEffect, useState } from 'react';
 import { useSongs } from '../state/SongsProvider';
+import { Smile, Frown, Angry, AlertTriangle, Meh, Music } from 'lucide-react';
 
 function StatsPage() {
-  const { songs } = useSongs();
+  const { songs, getStats } = useSongs();
+  const [stats, setStats] = useState({ total: 0, emotions: {} });
 
-  const { totalSongs, totalPlays, avgRating, topSentiment, topSongs } = useMemo(() => {
-    const totalSongsVal = songs.length;
-    const totalPlaysVal = songs.reduce((sum, song) => sum + (song.plays || 0), 0);
-    const avgRatingVal = totalSongsVal
-      ? (songs.reduce((sum, song) => sum + (song.rating || 0), 0) / totalSongsVal).toFixed(1)
-      : 0;
-
-    const sentimentCounts = {};
-    songs.forEach((song) => {
-      if (!song.sentiment) return;
-      sentimentCounts[song.sentiment] = (sentimentCounts[song.sentiment] || 0) + 1;
-    });
-    const topSentimentKey = Object.keys(sentimentCounts).reduce(
-      (a, b) => (sentimentCounts[a] > sentimentCounts[b] ? a : b),
-      '-'
-    );
-
-    const topSongsVal = [...songs]
-      .sort((a, b) => (b.plays || 0) - (a.plays || 0))
-      .slice(0, 10);
-
-    return {
-      totalSongs: totalSongsVal,
-      totalPlays: totalPlaysVal,
-      avgRating: avgRatingVal,
-      topSentiment: topSentimentKey,
-      topSongs: topSongsVal,
+  useEffect(() => {
+    const fetchStats = async () => {
+      const data = await getStats();
+      setStats(data);
     };
-  }, [songs]);
+    fetchStats();
+  }, [songs, getStats]);
+
+  const emotionList = Object.entries(stats.emotions || {}).sort((a, b) => b[1] - a[1]);
+  const topEmotion = emotionList.length > 0 ? emotionList[0][0] : '-';
+  const totalSongs = stats.total || 0;
+  
+  // Calculate average confidence
+  const avgConfidence = songs.length > 0 
+    ? (songs.reduce((sum, song) => sum + (song.confidence || 0), 0) / songs.length).toFixed(1)
+    : 0;
+
+  const emotionIconMap = {
+    joyeux: Smile,
+    triste: Frown,
+    colère: Angry,
+    peur: AlertTriangle,
+    neutre: Meh,
+    instrumental: Music,
+  };
 
   return (
-    <div className="page" id="statsReactPage">
-      <div className="page-header">
-        <h1 className="page-title">Statistiques</h1>
-      </div>
-      <div className="content-section">
-        <div className="stats-grid">
+    <div className="content-section">
+      <div className="stats-grid">
           <div className="stat-card">
-            <div className="stat-value" id="totalSongs">
+            <div className="stat-value">
               {totalSongs}
             </div>
             <div className="stat-label">Chansons</div>
           </div>
           <div className="stat-card">
-            <div className="stat-value" id="totalPlays">
-              {totalPlays}
+            <div className="stat-value">
+              {songs.length}
             </div>
-            <div className="stat-label">Écoutes</div>
+            <div className="stat-label">Fichiers audio</div>
           </div>
           <div className="stat-card">
-            <div className="stat-value" id="avgRating">
-              {avgRating}
+            <div className="stat-value">
+              {avgConfidence}%
             </div>
-            <div className="stat-label">Note moyenne</div>
+            <div className="stat-label">Confiance moyenne</div>
           </div>
           <div className="stat-card">
-            <div className="stat-value" id="topSentiment">
-              {topSentiment}
+            <div className="stat-value">
+              {topEmotion}
             </div>
-            <div className="stat-label">Genre préféré</div>
+            <div className="stat-label">Émotion dominante</div>
           </div>
         </div>
 
-        <div className="section-title">Les plus écoutées</div>
-        {topSongs.length === 0 ? (
+        <div className="section-title" style={{ marginTop: '32px', marginBottom: '16px' }}>
+          Distribution des émotions
+        </div>
+        {emotionList.length === 0 ? (
           <div className="empty-state" style={{ padding: '40px 0' }}>
-            <h3>Aucune écoute</h3>
-            <p>Aucune chanson n'a encore été écoutée.</p>
+            <h3>Aucune donnée</h3>
+            <p>Aucune chanson n'a encore été analysée.</p>
           </div>
         ) : (
-          <div id="topSongs" className="songs-list">
+          <div className="songs-list">
             <div className="list-header">
               <div>#</div>
-              <div>Titre</div>
-              <div>Album</div>
-              <div>Ajouté le</div>
-              <div>Durée</div>
+              <div>Émotion</div>
+              <div>Nombre de chansons</div>
+              <div>Pourcentage</div>
+              <div></div>
               <div></div>
             </div>
-            <div id="topSongsList">
-              {topSongs.map((song, index) => (
-                <div key={song.id} className="song-row">
-                  <div className="song-number">{index + 1}</div>
-                  <div className="song-title-cell">
-                    <div className="mini-cover" style={{ background: song.coverColor }}>
-                      🎵
+            <div>
+              {emotionList.map(([emotion, count], index) => {
+                const percentage = stats.total > 0 ? ((count / stats.total) * 100).toFixed(1) : 0;
+                const Icon = emotionIconMap[emotion] || Music;
+                
+                return (
+                  <div key={emotion} className="song-row">
+                    <div className="song-number">{index + 1}</div>
+                    <div className="song-title-cell">
+                      <div className="mini-cover">
+                        <Icon size={20} color="white" />
+                      </div>
+                      <div className="title-info">
+                        <h4>{emotion}</h4>
+                      </div>
                     </div>
-                    <div className="title-info">
-                      <h4>{song.title}</h4>
-                      <p>{song.artist}</p>
-                    </div>
+                    <div className="album-cell">{count}</div>
+                    <div className="duration-cell">{percentage}%</div>
+                    <div></div>
+                    <div></div>
                   </div>
-                  <div className="album-cell">{song.album}</div>
-                  <div className="duration-cell">
-                    {song.addedAt ? new Date(song.addedAt).toLocaleDateString() : ''}
-                  </div>
-                  <div className="plays-cell">{song.plays}</div>
-                  <div></div>
-                </div>
-              ))}
+                );
+              })}
             </div>
           </div>
         )}
       </div>
-    </div>
   );
 }
 

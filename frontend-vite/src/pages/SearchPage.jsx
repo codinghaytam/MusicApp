@@ -1,8 +1,9 @@
 import React, { useEffect, useState } from 'react';
 import SongCard from '../components/SongCard';
-import { searchSongs } from '../api/songs';
+import { useSongs } from '../state/SongsProvider';
 
 function SearchPage() {
+  const { searchSongs } = useSongs();
   const [query, setQuery] = useState('');
   const [results, setResults] = useState([]);
   const [loading, setLoading] = useState(false);
@@ -28,9 +29,9 @@ function SearchPage() {
       } finally {
         setLoading(false);
       }
-    }, 250);
+    }, 300);
     return () => clearTimeout(handle);
-  }, [query]);
+  }, [query, searchSongs]);
 
   const renderBody = () => {
     if (!query.trim()) {
@@ -76,9 +77,7 @@ function SearchPage() {
 
   return (
     <>
-      <div className="page-header">
-        <h1 className="page-title">Rechercher</h1>
-      </div>
+      
       <div className="content-section">
         <div
           className="search-bar"

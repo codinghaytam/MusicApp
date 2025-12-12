@@ -1,27 +1,38 @@
 import React, { useMemo } from 'react';
 import { useSongs } from '../state/SongsProvider';
-import { useLogs } from '../state/LogsProvider';
 import SongCard from '../components/SongCard';
+import { Smile, Frown, Angry, AlertTriangle, Meh, Music } from 'lucide-react';
+import { emotionIcons } from '../lib/emotionIcons';
 
 function LibraryPage({ onRequestAddSong }) {
   const { songs, librarySearch, deleteSong } = useSongs();
-  const { addLog } = useLogs();
   const [filter, setFilter] = React.useState('all');
   const [view, setView] = React.useState('grid');
+
+  // Normalize emotion strings to improve matching (remove accents, lowercase)
+  const normalize = (val) => {
+    return (val || '')
+      .toString()
+      .toLowerCase()
+      .normalize('NFD')
+      .replace(/[\u0300-\u036f]/g, '');
+  };
 
   const filteredSongs = useMemo(() => {
     let list = songs;
 
     if (filter !== 'all') {
-      list = list.filter((song) => song.sentiment === filter);
+      const target = normalize(filter);
+      list = list.filter((song) => normalize(song.emotion) === target);
     }
 
     const search = librarySearch.trim().toLowerCase();
     if (search) {
       list = list.filter(
         (song) =>
-          song.title.toLowerCase().includes(search) ||
-          song.artist.toLowerCase().includes(search)
+          (song.fileName || '').toLowerCase().includes(search) ||
+          (song.transcription || '').toLowerCase().includes(search) ||
+          normalize(song.emotion).includes(normalize(search))
       );
     }
 
@@ -29,26 +40,11 @@ function LibraryPage({ onRequestAddSong }) {
   }, [songs, filter, librarySearch]);
 
   const handleFilterClick = (id) => {
-    if (id !== filter && id !== 'all') {
-      addLog(
-        'filter',
-        'Filtre appliqué',
-        `Affichage des chansons avec le sentiment "<span class="log-song-title">${id}</span>"`
-      );
-    }
     setFilter(id);
   };
 
-  const handleDelete = (id) => {
-    const song = songs.find((s) => s.id === id);
-    if (!song) return;
-
-    deleteSong(id);
-    addLog(
-      'delete',
-      'Chanson supprimée',
-      `"<span class="log-song-title">${song.title}</span>" par ${song.artist} a été supprimée de la bibliothèque`
-    );
+  const handleDelete = async (id) => {
+    await deleteSong(id);
   };
 
   const renderEmptyState = () => (
@@ -72,17 +68,14 @@ function LibraryPage({ onRequestAddSong }) {
     </div>
   );
 
-  if (!filteredSongs.length) {
-    return renderEmptyState();
-  }
-
   const chips = [
-    { id: 'all', label: 'Tous' },
-    { id: 'joyeux', label: 'Joyeux' },
-    { id: 'triste', label: 'Triste' },
-    { id: 'énergique', label: 'Énergique' },
-    { id: 'calme', label: 'Calme' },
-    { id: 'romantique', label: 'Romantique' },
+    { id: 'all', label: 'Tous', Icon: null },
+    { id: 'joyeux', label: 'Joyeux', Icon: Smile },
+    { id: 'triste', label: 'Triste', Icon: Frown },
+    { id: 'colère', label: 'Colère', Icon: Angry },
+    { id: 'peur', label: 'Peur', Icon: AlertTriangle },
+    { id: 'neutre', label: 'Neutre', Icon: Meh },
+    { id: 'instrumental', label: 'Instrumental', Icon: Music },
   ];
 
   return (
@@ -96,7 +89,9 @@ function LibraryPage({ onRequestAddSong }) {
                 type="button"
                 className={`chip ${filter === chip.id ? 'active' : ''}`}
                 onClick={() => handleFilterClick(chip.id)}
+                style={{ display: 'flex', alignItems: 'center', gap: '6px' }}
               >
+                {chip.Icon && <chip.Icon size={16} />}
                 {chip.label}
               </button>
             ))}
@@ -120,7 +115,10 @@ function LibraryPage({ onRequestAddSong }) {
         </div>
       </div>
 
-      {view === 'grid' ? (
+      {!filteredSongs.length ? (
+        // Empty state inside content to keep filters accessible
+        renderEmptyState()
+      ) : view === 'grid' ? (
         <div className="songs-grid">
           {filteredSongs.map((song) => (
             <SongCard key={song.id} song={song} />
@@ -130,10 +128,10 @@ function LibraryPage({ onRequestAddSong }) {
         <div className="songs-list">
           <div className="list-header">
             <div>#</div>
-            <div>Titre</div>
-            <div>Album</div>
-            <div>Ajouté le</div>
-            <div>Durée</div>
+            <div>Fichier</div>
+            <div>Transcription</div>
+            <div>Émotion</div>
+            <div>Confiance</div>
             <div />
           </div>
           <div>
@@ -143,19 +141,23 @@ function LibraryPage({ onRequestAddSong }) {
                   <div className="song-number">{index + 1}</div>
                 </div>
                 <div className="song-title-cell">
-                  <div className="mini-cover" style={{ background: song.coverColor }}>
-                    🎵
+                  <div className="mini-cover">
+                    {(() => {
+                      const Icon = emotionIcons[song.icon] || emotionIcons.Music;
+                      return <Icon size={20} color="white" />;
+                    })()}
                   </div>
                   <div className="title-info">
-                    <h4>{song.title}</h4>
-                    <p>{song.artist}</p>
+                    <h4>{song.fileName || 'Sans titre'}</h4>
+                    <p>{song.emotion || 'neutre'}</p>
                   </div>
                 </div>
-                <div className="album-cell">{song.album}</div>
-                <div className="duration-cell">
-                  {song.addedAt ? new Date(song.addedAt).toLocaleDateString() : ''}
+                <div className="album-cell">
+                  {(song.transcription || 'Aucune transcription').substring(0, 50)}
+                  {song.transcription && song.transcription.length > 50 ? '...' : ''}
                 </div>
-                <div className="plays-cell">{song.duration}</div>
+                <div className="duration-cell">{song.emotion || 'neutre'}</div>
+                <div className="plays-cell">{song.confidence || 0}%</div>
                 <div className="actions-cell">
                   <button
                     type="button"

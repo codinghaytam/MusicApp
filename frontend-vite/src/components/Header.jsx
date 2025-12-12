@@ -1,39 +1,23 @@
 import React from 'react';
-import { Button } from '@/components/ui/button'
-import { useSongs } from '@/state/SongsProvider';
-import { useLogs } from '@/state/LogsProvider';
+import { Button } from './ui/button'
+import { useSongs } from '../state/SongsProvider';
 
 function Header({ activePage, onAddSongClick }) {
   const { librarySearch, setLibrarySearch } = useSongs();
-  const { addLog } = useLogs();
 
   const titleMap = {
     library: 'Bibliothèque',
     search: 'Rechercher',
     favorites: 'Favoris',
     stats: 'Statistiques',
-    logs: "Historique d'activité",
     playlists: 'Playlists',
   };
 
   const showAddButton = activePage === 'library';
 
-  let searchTimeout;
-
   const handleLibrarySearchChange = (e) => {
     const value = e.target.value;
     setLibrarySearch(value);
-
-    window.clearTimeout(searchTimeout);
-    if (value.trim().length > 2) {
-      searchTimeout = window.setTimeout(() => {
-        addLog(
-          'search',
-          'Recherche effectuée',
-          `Recherche de "<span class="log-song-title">${value.trim()}</span>"`
-        );
-      }, 1000);
-    }
   };
 
   return (

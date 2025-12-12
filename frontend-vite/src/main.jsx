@@ -4,7 +4,6 @@ import { BrowserRouter } from 'react-router-dom'
 import './index.css'
 import App from './App.jsx'
 import { SongsProvider } from './state/SongsProvider'
-import { LogsProvider } from './state/LogsProvider'
 import { AuthProvider } from './state/AuthProvider'
 
 createRoot(document.getElementById('root')).render(
@@ -12,9 +11,7 @@ createRoot(document.getElementById('root')).render(
     <BrowserRouter>
       <AuthProvider>
         <SongsProvider>
-          <LogsProvider>
-            <App />
-          </LogsProvider>
+          <App />
         </SongsProvider>
       </AuthProvider>
     </BrowserRouter>

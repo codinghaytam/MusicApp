@@ -52,20 +52,7 @@ function LogsPage() {
 
   return (
     <>
-      <div className="page-header">
-        <h1 className="page-title">Historique d'activité</h1>
-        <div className="header-actions">
-          <button
-            id="clearLogsBtn"
-            type="button"
-            className="btn-secondary"
-            style={{ padding: '12px 24px', borderRadius: '24px' }}
-            onClick={handleClearClick}
-          >
-            Effacer l'historique
-          </button>
-        </div>
-      </div>
+      
       <div className="content-section">
         {logs.length === 0 ? (
           renderEmpty()

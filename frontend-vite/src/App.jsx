@@ -7,7 +7,6 @@ import LibraryPage from './pages/LibraryPage';
 import SearchPage from './pages/SearchPage';
 import FavoritesPage from './pages/FavoritesPage';
 import StatsPage from './pages/StatsPage';
-import LogsPage from './pages/LogsPage';
 import AddSongModal from './components/AddSongModal';
 
 function PlaylistsPage() {
@@ -52,7 +51,6 @@ function App() {
           <Route path="/favorites" element={<FavoritesPage />} />
           <Route path="/playlists" element={<PlaylistsPage />} />
           <Route path="/stats" element={<StatsPage />} />
-          <Route path="/logs" element={<LogsPage />} />
         </Routes>
       </main>
     </div>
