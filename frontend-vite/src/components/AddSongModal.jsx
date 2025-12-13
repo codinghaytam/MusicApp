@@ -11,12 +11,32 @@ import { Button } from './ui/button'
 import { useSongs } from '../state/SongsProvider'
 
 const API_BASE = 'http://localhost:3000/api';
+const EMOTION_LABEL_MAP = {
+  anger: 'Anger',
+  angry: 'Anger',
+  disgust: 'Disgust',
+  fear: 'Fear',
+  fearful: 'Fear',
+  joy: 'Joy',
+  joyful: 'Joy',
+  sadness: 'Sadness',
+  sad: 'Sadness',
+  surprise: 'Surprise',
+  surprised: 'Surprise',
+};
+
+function formatEmotionLabel(label) {
+  if (!label) return '';
+  const cleaned = label.replace(/_/g, ' ').trim().toLowerCase();
+  return EMOTION_LABEL_MAP[cleaned] || label.trim();
+}
 
 export default function AddSongModal({ open, onOpenChange }) {
   const { addSong } = useSongs()
   const [file, setFile] = useState(null)
   const [analyzing, setAnalyzing] = useState(false)
   const [error, setError] = useState('')
+  const [analysisSummary, setAnalysisSummary] = useState(null)
 
   const handleFileChange = (e) => {
     const selectedFile = e.target.files[0]
@@ -26,10 +46,12 @@ export default function AddSongModal({ open, onOpenChange }) {
       if (!validTypes.includes(selectedFile.type) && !selectedFile.name.match(/\.(mp3|wav|mp4|m4a)$/i)) {
         setError('Veuillez sélectionner un fichier audio valide (MP3, WAV, MP4)')
         setFile(null)
+        setAnalysisSummary(null)
         return
       }
       setFile(selectedFile)
       setError('')
+      setAnalysisSummary(null)
     }
   }
 
@@ -43,6 +65,7 @@ export default function AddSongModal({ open, onOpenChange }) {
 
     setAnalyzing(true)
     setError('')
+    setAnalysisSummary(null)
 
     try {
       // Step 1: Analyze the audio file
@@ -59,6 +82,12 @@ export default function AddSongModal({ open, onOpenChange }) {
       }
 
       const analysisData = await analyzeResponse.json()
+      const normalizedEmotions = (analysisData.primaryEmotions || []).map(formatEmotionLabel)
+      setAnalysisSummary({
+        emotions: normalizedEmotions.slice(0, 3),
+        confidence: analysisData.confidence || 0,
+        transcription: analysisData.transcription || '',
+      })
       
       // Step 2: Save the analyzed data to Elasticsearch
       const result = await addSong(analysisData)
@@ -67,9 +96,10 @@ export default function AddSongModal({ open, onOpenChange }) {
         onOpenChange(false)
         setFile(null)
         setError('')
+        setAnalysisSummary(null)
         // Show success message
         window.setTimeout(() => {
-          const labels = (analysisData.primaryEmotions || []).slice(0, 3).join(', ') || 'instrumental';
+          const labels = normalizedEmotions.slice(0, 3).join(', ') || 'instrumental';
           window.alert(`Chanson ajoutée avec succès!\nÉmotions: ${labels}\nConfiance: ${analysisData.confidence || 0}%`)
         }, 100)
       } else {
@@ -109,6 +139,20 @@ export default function AddSongModal({ open, onOpenChange }) {
           {error && (
             <div className="text-sm text-red-500 bg-red-50 p-2 rounded">
               {error}
+            </div>
+          )}
+
+          {analysisSummary && (
+            <div className="text-sm rounded border border-gray-200 bg-gray-50 p-3 space-y-1">
+              <p className="font-medium">Prévisualisation de l'analyse</p>
+              <p>Émotions dominantes: {analysisSummary.emotions.length ? analysisSummary.emotions.join(', ') : 'Aucune'}</p>
+              <p>Confiance: {analysisSummary.confidence}%</p>
+              {analysisSummary.transcription && (
+                <p className="text-xs italic text-gray-500">
+                  "{analysisSummary.transcription.slice(0, 120)}"
+                  {analysisSummary.transcription.length > 120 ? '…' : ''}
+                </p>
+              )}
             </div>
           )}
 

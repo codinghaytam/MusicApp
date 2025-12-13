@@ -71,7 +71,26 @@ const esClient = new Client({
 const ES_INDEX = 'audio_analysis';
 const upload = multer({ dest: 'uploads/' });
 const KEYBERT_SCRIPT = path.join(__dirname, 'keyword_service.py');
-const MIN_EMOTION_SCORE = 0.3;
+const MAX_EMOTION_RESULTS = 3;
+const EMOTION_LABEL_MAP = {
+  anger: 'Anger',
+  angry: 'Anger',
+  disgust: 'Disgust',
+  fear: 'Fear',
+  fearful: 'Fear',
+  joy: 'Joy',
+  joyful: 'Joy',
+  sadness: 'Sadness',
+  sad: 'Sadness',
+  surprise: 'Surprise',
+  surprised: 'Surprise',
+};
+
+function normalizeEmotionLabel(label) {
+  if (!label) return '';
+  const cleaned = label.replace(/_/g, ' ').trim().toLowerCase();
+  return EMOTION_LABEL_MAP[cleaned] || label.trim();
+}
 
 if (!fs.existsSync('uploads')) {
   fs.mkdirSync('uploads');
@@ -272,32 +291,46 @@ async function analyzeEmotion(text) {
   // Use local Transformers.js pipeline
   const classifier = await getEmotionPipeline();
   const outputs = await classifier(trimmed, { topk: 8 });
-  const scoresMap = {};
-  // outputs is array of { label, score }
-  (Array.isArray(outputs) ? outputs : [outputs]).forEach(item => {
-    if (item && item.label && typeof item.score === 'number') {
-      scoresMap[item.label] = item.score;
+
+  // Flatten and normalize predictions
+  const flatOutputs = Array.isArray(outputs) ? outputs.flat() : [outputs];
+  const normalized = flatOutputs
+    .filter(item => item && item.label)
+    .map(item => ({
+      rawLabel: item.label,
+      label: normalizeEmotionLabel(item.label),
+      score: typeof item.score === 'number' ? item.score : 0,
+    }))
+    .sort((a, b) => b.score - a.score);
+
+  const topPreds = normalized.slice(0, MAX_EMOTION_RESULTS);
+  const scores = {};
+  const emotions = [];
+
+  topPreds.forEach(pred => {
+    const label = pred.label || pred.rawLabel;
+    if (!label) return;
+    if (!emotions.includes(label)) {
+      emotions.push(label);
     }
+    scores[label] = Math.max(pred.score, scores[label] || 0);
   });
 
-  // Apply user rules: focus on Ekman emotions, keep scores above threshold
-  const allowedLabels = ['Anger','Disgust','Fear','Joy','Sadness','Surprise'];
-  const filtered = Object.entries(scoresMap)
-    .filter(([label, score]) => allowedLabels.includes(label) && score >= MIN_EMOTION_SCORE)
-    .sort((a, b) => b[1] - a[1]);
-
-  const emotions = filtered.map(([label]) => label);
-  const scores = Object.fromEntries(filtered);
-  const primaryEmotions = emotions;
-  let confidence = emotions.length ? Math.round((scores[emotions[0]] || 0) * 100) : 0;
-
-  const keywords = extractKeywordsWithKeyBERT(trimmed);
-
   if (!emotions.length) {
-    logger.warn('No emotions above threshold', { sample: filtered.slice(0, 3) });
+    const snapshot = normalized.slice(0, 3).map(p => ({ label: p.rawLabel, score: p.score }));
+    logger.warn('No top emotions detected; showing raw predictions snapshot', { snapshot });
   }
 
-  return { confidence, keywords, emotions, primaryEmotions, scores };
+  const confidence = topPreds.length ? Math.round((topPreds[0].score || 0) * 100) : 0;
+  const keywords = extractKeywordsWithKeyBERT(trimmed);
+
+  return {
+    confidence,
+    keywords,
+    emotions,
+    primaryEmotions: emotions,
+    scores,
+  };
 }
 
 /**
@@ -318,6 +351,8 @@ app.post('/api/analyze', upload.single('file'), async (req, res) => {
 
     const resultData = {
       fileName: inputFile.originalname,
+      storedFileName: inputFile.filename,
+      storedPath: path.join('uploads', inputFile.filename),
       transcription: transcription,
       ...analysis,
       timestamp: new Date().toISOString()
@@ -328,7 +363,8 @@ app.post('/api/analyze', upload.single('file'), async (req, res) => {
     logger.error("Erreur lors de l'analyse:", { error });
     res.status(500).json({ message: error.message || "Erreur interne du serveur." });
   } finally {
-    if (fs.existsSync(inputPath)) fs.unlinkSync(inputPath);
+    // Keep uploaded original file in uploads/ so it can be served/played later.
+    // The temporary WAV file is cleaned in transcribeAudio's finally block.
   }
 });
 
@@ -353,17 +389,33 @@ app.post('/api/save', async (req, res) => {
  * Endpoint pour RECHERCHER
  */
 app.get('/api/search', async (req, res) => {
-  const query = req.query.q || '';
+  const query = (req.query.q || '').trim();
+  const size = Math.min(parseInt(req.query.size || '25', 10) || 25, 200);
+  const from = Math.max(parseInt(req.query.from || '0', 10) || 0, 0);
+
+  const searchQuery = query
+    ? {
+        multi_match: {
+          query,
+          fields: ['transcription', 'primaryEmotions', 'fileName', 'keywords']
+        }
+      }
+    : { match_all: {} };
+
   try {
     const response = await esClient.search({
       index: ES_INDEX,
-      query: {
-        multi_match: {
-          query: query,
-        fields: ['transcription', 'primaryEmotions', 'fileName', 'keywords']        }
-      }
+      size,
+      from,
+      query: searchQuery,
     });
-    const results = response.hits.hits.map(hit => hit._source);
+    const total = response.hits?.total?.value ?? 0;
+    const results = response.hits.hits.map(hit => ({
+      id: hit._id,
+      score: hit._score,
+      ...hit._source,
+    }));
+    res.set('X-Total-Count', String(total));
     res.json(results);
   } catch (error) {
     logger.error('Erreur de recherche ES:', { error });
@@ -408,6 +460,62 @@ app.get('/api/stats', async (req, res) => {
     }
     logger.error('Erreur de statistiques ES:', { error });
     res.status(500).json({ success: false, message: 'Erreur de statistiques' });
+  }
+});
+
+// Serve uploaded files statically (no directory listing)
+app.use('/uploads', express.static(path.join(__dirname, 'uploads')));
+
+// Streaming endpoint with Range support for HTML5 audio seeking
+app.get('/api/audio/:filename', (req, res) => {
+  try {
+    const filename = req.params.filename;
+    // Basic safety: prevent path traversal
+    if (!filename || filename.includes('..') || filename.includes('/') || filename.includes('\\')) {
+      return res.status(400).send('Invalid filename');
+    }
+
+    const filePath = path.join(__dirname, 'uploads', filename);
+    if (!fs.existsSync(filePath)) return res.status(404).send('Not found');
+
+    const stat = fs.statSync(filePath);
+    const total = stat.size;
+    const range = req.headers.range;
+
+    // Simple mime-type mapping for common audio types
+    const ext = path.extname(filePath).toLowerCase();
+    const mimeMap = { '.mp3': 'audio/mpeg', '.wav': 'audio/wav', '.m4a': 'audio/mp4', '.aac': 'audio/aac', '.ogg': 'audio/ogg' };
+    const contentType = mimeMap[ext] || 'application/octet-stream';
+
+    if (range) {
+      const parts = range.replace(/bytes=/, '').split('-');
+      const start = parseInt(parts[0], 10);
+      const end = parts[1] ? parseInt(parts[1], 10) : total - 1;
+      if (isNaN(start) || isNaN(end) || start > end || end >= total) {
+        return res.status(416).set('Content-Range', `bytes */${total}`).end();
+      }
+      res.status(206);
+      res.set({
+        'Content-Range': `bytes ${start}-${end}/${total}`,
+        'Accept-Ranges': 'bytes',
+        'Content-Length': (end - start) + 1,
+        'Content-Type': contentType,
+      });
+      const stream = fs.createReadStream(filePath, { start, end });
+      stream.pipe(res);
+    } else {
+      res.status(200);
+      res.set({
+        'Content-Length': total,
+        'Content-Type': contentType,
+        'Accept-Ranges': 'bytes'
+      });
+      const stream = fs.createReadStream(filePath);
+      stream.pipe(res);
+    }
+  } catch (err) {
+    logger.error('Audio stream error', { err: err.message });
+    res.status(500).end();
   }
 });
 

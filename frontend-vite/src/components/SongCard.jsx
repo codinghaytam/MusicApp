@@ -1,8 +1,10 @@
 import React from 'react';
-import { Smile, Frown, Angry, AlertTriangle, Meh, Music, Zap, Ban } from 'lucide-react';
+import { Smile, Frown, Angry, AlertTriangle, Meh, Music, Zap, Ban, Play, Pause } from 'lucide-react';
+import { useSongs } from '../state/SongsProvider';
 
 function SongCard({ song }) {
   if (!song) return null;
+  const { playSong, isPlaying, currentTrackId } = useSongs();
   const primary = (song.primaryEmotions && song.primaryEmotions[0]) || null;
   const iconMap = {
     Joy: Smile,
@@ -29,19 +31,20 @@ function SongCard({ song }) {
     <div className="song-card" data-id={song.id}>
       <div className="album-cover" style={{ background: bgColor }}>
         <Icon size={48} color="white" strokeWidth={2} />
-        <div className="play-overlay">
-          <svg
-            width="24"
-            height="24"
-            viewBox="0 0 24 24"
-            fill="currentColor"
-          >
-            <polygon points="5 3 19 12 5 21 5 3" />
-          </svg>
+        <div
+          className="play-overlay"
+          onClick={(e) => { e.stopPropagation(); playSong(song); }}
+          style={{ cursor: 'pointer' }}
+        >
+          {isPlaying && currentTrackId === song.id ? (
+            <Pause size={20} color="white" />
+          ) : (
+            <Play size={20} color="white" />
+          )}
         </div>
       </div>
       <div className="song-info">
-        <h3 title={song.fileName || song.title}>{song.fileName || song.title || 'Sans titre'}</h3>
+        <h3 title={song.title}>{song.title || 'Sans titre'}</h3>
         <p className="artist">
           {(primary || 'instrumental')} ({song.confidence ?? 0}%)
         </p>

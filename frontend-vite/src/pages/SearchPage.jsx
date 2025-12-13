@@ -6,6 +6,7 @@ function SearchPage() {
   const { searchSongs } = useSongs();
   const [query, setQuery] = useState('');
   const [results, setResults] = useState([]);
+  const [total, setTotal] = useState(0);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState('');
 
@@ -21,11 +22,13 @@ function SearchPage() {
       setLoading(true);
       setError('');
       try {
-        const data = await searchSongs(q);
-        setResults(Array.isArray(data) ? data : []);
+        const { results: list, total: count } = await searchSongs(q);
+        setResults(Array.isArray(list) ? list : []);
+        setTotal(count || 0);
       } catch (e) {
         setError('Erreur de recherche');
         setResults([]);
+        setTotal(0);
       } finally {
         setLoading(false);
       }
@@ -35,6 +38,7 @@ function SearchPage() {
 
   const renderBody = () => {
     if (!query.trim()) {
+      setTotal(0);
       return (
         <p style={{ color: '#b3b3b3', textAlign: 'center', padding: 40 }}>
           Recherchez des chansons...
@@ -95,6 +99,11 @@ function SearchPage() {
             onChange={(e) => setQuery(e.target.value)}
           />
         </div>
+        {query.trim() && !loading && !error && (
+          <p style={{ textAlign: 'center', color: '#b3b3b3', marginBottom: 16 }}>
+            {total} résultat{total === 1 ? '' : 's'}
+          </p>
+        )}
         {renderBody()}
       </div>
     </>
