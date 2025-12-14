@@ -45,28 +45,7 @@ function Sidebar({ activePage, onChangePage }) {
         </button>
         
         <div className="nav-divider" />
-        <button
-          className={`nav-item ${activePage === 'playlists' ? 'active' : ''}`}
-          data-page="playlists"
-          onClick={handleNav('playlists')}
-        >
-          <svg
-            width="24"
-            height="24"
-            viewBox="0 0 24 24"
-            fill="none"
-            stroke="currentColor"
-            strokeWidth="2"
-          >
-            <line x1="8" y1="6" x2="21" y2="6" />
-            <line x1="8" y1="12" x2="21" y2="12" />
-            <line x1="8" y1="18" x2="21" y2="18" />
-            <line x1="3" y1="6" x2="3.01" y2="6" />
-            <line x1="3" y1="12" x2="3.01" y2="12" />
-            <line x1="3" y1="18" x2="3.01" y2="18" />
-          </svg>
-          <span>Playlists</span>
-        </button>
+        
         <button
           className={`nav-item ${activePage === 'stats' ? 'active' : ''}`}
           data-page="stats"

@@ -1,9 +1,10 @@
 import React, { useEffect } from 'react';
 import { useSongs } from '../state/SongsProvider';
-import { Smile, Frown, Angry, AlertTriangle, Meh, Music, Zap, Ban } from 'lucide-react';
+import { Smile, Frown, Angry, AlertTriangle, Music, Zap, Ban, Meh } from 'lucide-react';
+import { formatEmotionForDisplay } from '../lib/emotionLabels';
 
 function StatsPage() {
-  const { stats, statsLoading, refreshStats } = useSongs();
+  const { stats, refreshStats } = useSongs();
   const statsSnapshot = stats || { total: 0, emotions: {}, averageConfidence: 0, topEmotion: '' };
 
   useEffect(() => {
@@ -11,9 +12,11 @@ function StatsPage() {
   }, [refreshStats]);
 
   const emotionList = Object.entries(statsSnapshot.emotions || {}).sort((a, b) => b[1] - a[1]);
-  const topEmotion = statsSnapshot.topEmotion || (emotionList.length > 0 ? emotionList[0][0] : '-');
+  const rawTopEmotion = statsSnapshot.topEmotion || (emotionList.length > 0 ? emotionList[0][0] : '');
+  const topEmotion = rawTopEmotion ? formatEmotionForDisplay(rawTopEmotion, '-') : '-';
   const totalSongs = statsSnapshot.total || 0;
-  const avgConfidence = (statsSnapshot.averageConfidence || 0).toFixed(1);
+  const uniqueEmotionCount = emotionList.length;
+  const maxEmotionCount = emotionList.reduce((max, [, count]) => Math.max(max, count), 0) || 1;
 
   const emotionIconMap = {
     Joy: Smile,
@@ -22,7 +25,21 @@ function StatsPage() {
     Fear: AlertTriangle,
     Disgust: Ban,
     Surprise: Zap,
-    instrumental: Music,
+    Neutral: Meh,
+    Calm: Music,
+    Instrumental: Music,
+  };
+
+  const emotionColorMap = {
+    Joy: '#1db954',
+    Sadness: '#2d46b9',
+    Anger: '#e13300',
+    Fear: '#8e44ad',
+    Disgust: '#16a085',
+    Surprise: '#e67e22',
+    Neutral: '#535353',
+    Calm: '#1abc9c',
+    Instrumental: '#ff6600',
   };
 
   return (
@@ -42,9 +59,9 @@ function StatsPage() {
           </div>
           <div className="stat-card">
             <div className="stat-value">
-              {avgConfidence}%
+              {uniqueEmotionCount}
             </div>
-            <div className="stat-label">Confiance moyenne</div>
+            <div className="stat-label">Émotions uniques</div>
           </div>
           <div className="stat-card">
             <div className="stat-value">
@@ -63,39 +80,34 @@ function StatsPage() {
             <p>Aucune chanson n'a encore été analysée.</p>
           </div>
         ) : (
-          <div className="songs-list">
-            <div className="list-header">
-              <div>#</div>
-              <div>Émotion</div>
-              <div>Nombre de chansons</div>
-              <div>Pourcentage</div>
-              <div></div>
-              <div></div>
-            </div>
-            <div>
-              {emotionList.map(([emotion, count], index) => {
-                const percentage = stats.total > 0 ? ((count / stats.total) * 100).toFixed(1) : 0;
-                const Icon = emotionIconMap[emotion] || Music;
-                
-                return (
-                  <div key={emotion} className="song-row">
-                    <div className="song-number">{index + 1}</div>
-                    <div className="song-title-cell">
-                      <div className="mini-cover">
-                        <Icon size={20} color="white" />
-                      </div>
-                      <div className="title-info">
-                        <h4>{emotion}</h4>
-                      </div>
+          <div className="emotion-bars">
+            {emotionList.map(([emotion, count], index) => {
+              const percentage = totalSongs > 0 ? ((count / totalSongs) * 100).toFixed(1) : '0.0';
+              const displayEmotion = formatEmotionForDisplay(emotion);
+              const Icon = emotionIconMap[displayEmotion] || Music;
+              const widthPercent = Math.max(4, Math.min(100, (count / maxEmotionCount) * 100));
+              return (
+                <div key={`${emotion}-${index}`} className="emotion-bar-row">
+                  <div className="emotion-bar-label">
+                    <span className="emotion-rank">{index + 1}</span>
+                    <div className="emotion-label-icon">
+                      <Icon size={18} />
                     </div>
-                    <div className="album-cell">{count}</div>
-                    <div className="duration-cell">{percentage}%</div>
-                    <div></div>
-                    <div></div>
+                    <span>{displayEmotion}</span>
                   </div>
-                );
-              })}
-            </div>
+                  <div className="emotion-bar-track">
+                    <div
+                      className="emotion-bar-fill"
+                      style={{
+                        width: `${widthPercent}%`,
+                        backgroundColor: emotionColorMap[displayEmotion] || '#1db954',
+                      }}
+                    />
+                  </div>
+                  <div className="emotion-bar-value">{count} ({percentage}%)</div>
+                </div>
+              );
+            })}
           </div>
         )}
       </div>

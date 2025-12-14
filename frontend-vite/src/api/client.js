@@ -1,5 +1,5 @@
 const CONFIG = {
-  BASE_URL: 'http://localhost:3000',
+  BASE_URL: 'http://localhost:8000',
   ENDPOINTS: {
     search: '/api/search',
     save: '/api/save',

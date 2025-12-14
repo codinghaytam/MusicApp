@@ -1,47 +1,34 @@
 import React, { useMemo } from 'react';
 import { useSongs } from '../state/SongsProvider';
 import SongCard from '../components/SongCard';
-import { Smile, Frown, Angry, AlertTriangle, Meh, Music, Zap, Ban } from 'lucide-react';
+import { Smile, Frown, Angry, AlertTriangle, Music, Zap, Ban, Meh } from 'lucide-react';
+import { formatEmotionForDisplay } from '../lib/emotionLabels';
 
 function LibraryPage({ onRequestAddSong }) {
-  const { songs, librarySearch, deleteSong } = useSongs();
+  const { songs, deleteSong } = useSongs();
   const [filter, setFilter] = React.useState('all');
   const [view, setView] = React.useState('grid');
-
-  // Normalize emotion strings to improve matching (remove accents, lowercase)
-  const normalize = (val) => {
-    return (val || '')
-      .toString()
-      .toLowerCase()
-      .normalize('NFD')
-      .replace(/[\u0300-\u036f]/g, '');
-  };
 
   const filteredSongs = useMemo(() => {
     let list = songs;
 
     if (filter !== 'all') {
-      if (filter === 'instrumental') {
-        list = list.filter((song) => !song.primaryEmotions || song.primaryEmotions.length === 0);
+      const targetLabel = formatEmotionForDisplay(filter);
+      if (filter === 'Instrumental') {
+        list = list.filter((song) => {
+          if (!song.primaryEmotions || song.primaryEmotions.length === 0) return true;
+          const primary = song.primaryEmotions[0] || '';
+          return formatEmotionForDisplay(primary) === targetLabel;
+        });
       } else {
-        list = list.filter((song) => (song.primaryEmotions || []).includes(filter));
+        list = list.filter((song) =>
+          (song.primaryEmotions || []).some((label) => formatEmotionForDisplay(label) === targetLabel)
+        );
       }
     }
 
-    const search = librarySearch.trim().toLowerCase();
-    if (search) {
-      list = list.filter((song) => {
-        const names = (song.primaryEmotions || []).join(' ').toLowerCase();
-        return (
-          (song.fileName || '').toLowerCase().includes(search) ||
-          (song.transcription || '').toLowerCase().includes(search) ||
-          names.includes(search)
-        );
-      });
-    }
-
     return list;
-  }, [songs, filter, librarySearch]);
+  }, [songs, filter]);
 
   const handleFilterClick = (id) => {
     setFilter(id);
@@ -80,7 +67,7 @@ function LibraryPage({ onRequestAddSong }) {
     { id: 'Fear', label: 'Fear', Icon: AlertTriangle },
     { id: 'Disgust', label: 'Disgust', Icon: Ban },
     { id: 'Surprise', label: 'Surprise', Icon: Zap },
-    { id: 'instrumental', label: 'Instrumental', Icon: Music },
+    { id: 'Instrumental', label: 'Instrumental', Icon: Music },
   ];
 
   return (
@@ -133,11 +120,10 @@ function LibraryPage({ onRequestAddSong }) {
         <div className="songs-list">
           <div className="list-header">
             <div>#</div>
-            <div>Fichier</div>
+            <div>Titre</div>
             <div>Transcription</div>
             <div>Émotion</div>
-            <div>Confiance</div>
-            <div />
+            <div>Actions</div>
           </div>
           <div>
             {filteredSongs.map((song, index) => (
@@ -148,23 +134,33 @@ function LibraryPage({ onRequestAddSong }) {
                 <div className="song-title-cell">
                   <div className="mini-cover">
                     {(() => {
-                      const primary = (song.primaryEmotions && song.primaryEmotions[0]) || 'instrumental';
-                      const iconMap = { Joy: Smile, Sadness: Frown, Anger: Angry, Fear: AlertTriangle, Disgust: Ban, Surprise: Zap, instrumental: Music };
+                      const primaryRaw = song.primaryEmotions && song.primaryEmotions[0];
+                      const primary = formatEmotionForDisplay(primaryRaw);
+                      const iconMap = {
+                        Joy: Smile,
+                        Sadness: Frown,
+                        Anger: Angry,
+                        Fear: AlertTriangle,
+                        Disgust: Ban,
+                        Surprise: Zap,
+                        Neutral: Meh,
+                        Calm: Music,
+                        Instrumental: Music,
+                      };
                       const Icon = iconMap[primary] || Music;
                       return <Icon size={20} color="white" />;
                     })()}
                   </div>
                   <div className="title-info">
-                    <h4>{song.fileName || 'Sans titre'}</h4>
-                    <p>{(song.primaryEmotions && song.primaryEmotions[0]) || 'instrumental'}</p>
+                    <h4>{song.title || 'Sans titre'}</h4>
+                    <p>{primary}</p>
                   </div>
                 </div>
                 <div className="album-cell">
                   {(song.transcription || 'Aucune transcription').substring(0, 50)}
                   {song.transcription && song.transcription.length > 50 ? '...' : ''}
                 </div>
-                <div className="duration-cell">{(song.primaryEmotions && song.primaryEmotions[0]) || 'instrumental'}</div>
-                <div className="plays-cell">{song.confidence || 0}%</div>
+                <div className="duration-cell">{formatEmotionForDisplay(song.primaryEmotions && song.primaryEmotions[0])}</div>
                 <div className="actions-cell">
                   <button
                     type="button"

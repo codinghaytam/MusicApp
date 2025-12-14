@@ -281,12 +281,12 @@ body {
 
 .list-header {
   @apply grid gap-4 px-4 py-3 border-b border-neutral-800 text-neutral-400 text-xs font-semibold uppercase tracking-wider;
-  grid-template-columns: 40px 1fr 1fr 120px 80px 40px;
+  grid-template-columns: 40px 1fr 1fr 140px 80px;
 }
 
 .song-row {
   @apply grid gap-4 px-4 py-3 rounded cursor-pointer transition-all items-center hover:bg-neutral-900;
-  grid-template-columns: 40px 1fr 1fr 120px 80px 40px;
+  grid-template-columns: 40px 1fr 1fr 140px 80px;
 }
 
 .song-row.playing {
@@ -329,10 +329,6 @@ body {
   @apply text-neutral-400 text-sm;
 }
 
-.plays-cell {
-  @apply text-neutral-400 text-sm text-center;
-}
-
 .actions-cell {
   @apply flex justify-center;
 }
@@ -360,6 +356,38 @@ body {
 
 .stat-label {
   @apply text-sm text-neutral-400 font-semibold;
+}
+
+.emotion-bars {
+  @apply flex flex-col gap-4 bg-neutral-900 rounded-xl p-6;
+}
+
+.emotion-bar-row {
+  @apply flex items-center gap-4;
+}
+
+.emotion-bar-label {
+  @apply flex items-center gap-2 min-w-[150px] text-sm font-semibold text-white;
+}
+
+.emotion-label-icon {
+  @apply w-8 h-8 rounded-full flex items-center justify-center bg-neutral-800 text-white;
+}
+
+.emotion-rank {
+  @apply text-xs font-bold text-neutral-400 w-6 text-center;
+}
+
+.emotion-bar-track {
+  @apply flex-1 h-3 rounded-full bg-neutral-800 overflow-hidden;
+}
+
+.emotion-bar-fill {
+  @apply h-full rounded-full transition-all duration-300 ease-out;
+}
+
+.emotion-bar-value {
+  @apply text-sm font-semibold text-neutral-300 min-w-[120px] text-right;
 }
 
 .nav-divider {

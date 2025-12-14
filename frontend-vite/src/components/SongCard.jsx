@@ -1,11 +1,14 @@
 import React from 'react';
 import { Smile, Frown, Angry, AlertTriangle, Meh, Music, Zap, Ban, Play, Pause } from 'lucide-react';
 import { useSongs } from '../state/SongsProvider';
+import { formatEmotionForDisplay } from '../lib/emotionLabels';
 
 function SongCard({ song }) {
   if (!song) return null;
   const { playSong, isPlaying, currentTrackId } = useSongs();
-  const primary = (song.primaryEmotions && song.primaryEmotions[0]) || null;
+  const primary = song?.primaryEmotions?.[0]
+    ? formatEmotionForDisplay(song.primaryEmotions[0])
+    : formatEmotionForDisplay('');
   const iconMap = {
     Joy: Smile,
     Sadness: Frown,
@@ -13,7 +16,9 @@ function SongCard({ song }) {
     Fear: AlertTriangle,
     Disgust: Ban,
     Surprise: Zap,
-    instrumental: Music,
+    Neutral: Meh,
+    Calm: Music,
+    Instrumental: Music,
   };
   const colorMap = {
     Joy: '#1db954',
@@ -22,10 +27,12 @@ function SongCard({ song }) {
     Fear: '#8e44ad',
     Disgust: '#16a085',
     Surprise: '#e67e22',
-    instrumental: '#ff6600',
+    Neutral: '#535353',
+    Calm: '#1abc9c',
+    Instrumental: '#ff6600',
   };
-  const Icon = iconMap[primary || 'instrumental'] || Music;
-  const bgColor = colorMap[primary || 'instrumental'] || '#535353';
+  const Icon = iconMap[primary] || Music;
+  const bgColor = colorMap[primary] || '#535353';
 
   return (
     <div className="song-card" data-id={song.id}>
@@ -46,7 +53,7 @@ function SongCard({ song }) {
       <div className="song-info">
         <h3 title={song.title}>{song.title || 'Sans titre'}</h3>
         <p className="artist">
-          {(primary || 'instrumental')} ({song.confidence ?? 0}%)
+          {primary}
         </p>
         {song.primaryEmotions && song.primaryEmotions.length > 1 && (
           <div style={{ display: 'flex', gap: 6, flexWrap: 'wrap', marginTop: 6 }}>

@@ -1,14 +1,16 @@
 import React, { createContext, useContext, useState, useEffect, useCallback, useRef } from 'react';
+import { normalizeSongDocument, normalizeStatsPayload } from '../lib/emotionLabels';
 
 const SongsContext = createContext(null);
 
-const API_BASE = 'http://localhost:3000/api';
+const API_BASE = 'http://localhost:8000/api';
 const API_ORIGIN = API_BASE.replace(/\/api$/, '');
 const DEFAULT_STATS = { total: 0, emotions: {}, averageConfidence: 0, topEmotion: '' };
+const PAGE_SIZE = 500;
+const MAX_FETCH = 5000;
 
 export function SongsProvider({ children }) {
   const [songs, setSongs] = useState([]);
-  const [librarySearch, setLibrarySearch] = useState('');
   const [loading, setLoading] = useState(false);
   const [stats, setStats] = useState(DEFAULT_STATS);
   const [statsLoading, setStatsLoading] = useState(false);
@@ -42,10 +44,19 @@ export function SongsProvider({ children }) {
   const fetchSongs = async () => {
     try {
       setLoading(true);
-      const response = await fetch(`${API_BASE}/items?size=200`);
-      if (!response.ok) throw new Error('Failed to fetch songs');
-      const data = await response.json();
-      setSongs(data || []);
+      let from = 0;
+      let combined = [];
+      while (from < MAX_FETCH) {
+        const response = await fetch(`${API_BASE}/items?size=${PAGE_SIZE}&from=${from}`);
+        if (!response.ok) throw new Error('Failed to fetch songs');
+        const page = await response.json();
+        const list = Array.isArray(page) ? page : [];
+        combined = combined.concat(list);
+        if (list.length < PAGE_SIZE) break;
+        from += PAGE_SIZE;
+      }
+      const normalized = combined.map((song) => normalizeSongDocument(song));
+      setSongs(normalized);
     } catch (error) {
       console.error('Error fetching songs:', error);
       setSongs([]);
@@ -65,10 +76,21 @@ export function SongsProvider({ children }) {
 
       if (!response.ok) throw new Error('Failed to save song');
       const result = await response.json();
-      
-      // Refresh the list
-      await fetchSongs();
-      return { success: true, id: result.id };
+
+      const normalizedAnalysis = normalizeSongDocument(analysisData);
+      const fallbackId =
+        normalizedAnalysis.id ||
+        normalizedAnalysis.storedFileName ||
+        normalizedAnalysis.fileName ||
+        `temp-${Date.now()}`;
+      const newSong = {
+        ...normalizedAnalysis,
+        id: result?.id || fallbackId,
+        timestamp: normalizedAnalysis.timestamp || new Date().toISOString(),
+      };
+      setSongs((prev) => [normalizeSongDocument(newSong), ...prev]);
+      refreshStats();
+      return { success: true, id: newSong.id };
     } catch (error) {
       console.error('Error adding song:', error);
       return { success: false, error: error.message };
@@ -123,7 +145,8 @@ export function SongsProvider({ children }) {
       const results = Array.isArray(data)
         ? data
         : (data && Array.isArray(data.results) ? data.results : []);
-      return { results, total };
+      const normalizedResults = results.map((song) => normalizeSongDocument(song));
+      return { results: normalizedResults, total };
     } catch (error) {
       console.error('Error searching songs:', error);
       return { results: [], total: 0 };
@@ -136,12 +159,14 @@ export function SongsProvider({ children }) {
       const response = await fetch(`${API_BASE}/stats`);
       if (!response.ok) throw new Error('Failed to fetch stats');
       const data = await response.json();
-      setStats(data || DEFAULT_STATS);
-      return data || DEFAULT_STATS;
+      const normalizedStats = normalizeStatsPayload(data || DEFAULT_STATS);
+      setStats(normalizedStats);
+      return normalizedStats;
     } catch (error) {
       console.error('Error fetching stats:', error);
-      setStats(DEFAULT_STATS);
-      return DEFAULT_STATS;
+      const fallback = normalizeStatsPayload(DEFAULT_STATS);
+      setStats(fallback);
+      return fallback;
     } finally {
       setStatsLoading(false);
     }
@@ -217,8 +242,6 @@ export function SongsProvider({ children }) {
     statsLoading,
     refreshStats,
     fetchSongs,
-    librarySearch,
-    setLibrarySearch,
     loading,
     // Playback API
     playSong,

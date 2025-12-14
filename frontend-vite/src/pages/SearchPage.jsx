@@ -9,43 +9,35 @@ function SearchPage() {
   const [total, setTotal] = useState(0);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState('');
+  const normalizedQuery = query.trim();
+  const isBlankQuery = normalizedQuery.length === 0;
 
   useEffect(() => {
-    const q = query.trim();
-    if (!q) {
-      setResults([]);
-      setError('');
-      setLoading(false);
-      return;
-    }
+    let cancelled = false;
     const handle = setTimeout(async () => {
       setLoading(true);
       setError('');
       try {
-        const { results: list, total: count } = await searchSongs(q);
+        const { results: list, total: count } = await searchSongs(normalizedQuery);
+        if (cancelled) return;
         setResults(Array.isArray(list) ? list : []);
         setTotal(count || 0);
       } catch (e) {
+        if (cancelled) return;
         setError('Erreur de recherche');
         setResults([]);
         setTotal(0);
       } finally {
-        setLoading(false);
+        if (!cancelled) setLoading(false);
       }
-    }, 300);
-    return () => clearTimeout(handle);
-  }, [query, searchSongs]);
+    }, isBlankQuery ? 0 : 300);
+    return () => {
+      cancelled = true;
+      clearTimeout(handle);
+    };
+  }, [normalizedQuery, isBlankQuery, searchSongs]);
 
   const renderBody = () => {
-    if (!query.trim()) {
-      setTotal(0);
-      return (
-        <p style={{ color: '#b3b3b3', textAlign: 'center', padding: 40 }}>
-          Recherchez des chansons...
-        </p>
-      );
-    }
-
     if (loading) {
       return (
         <p style={{ color: '#b3b3b3', textAlign: 'center', padding: 20 }}>
@@ -65,7 +57,7 @@ function SearchPage() {
     if (!results.length) {
       return (
         <p style={{ color: '#b3b3b3', textAlign: 'center', padding: 40 }}>
-          Aucune chanson trouvée.
+          {isBlankQuery ? 'Aucune chanson disponible.' : 'Aucune chanson trouvée.'}
         </p>
       );
     }
@@ -99,9 +91,11 @@ function SearchPage() {
             onChange={(e) => setQuery(e.target.value)}
           />
         </div>
-        {query.trim() && !loading && !error && (
+        {!loading && !error && (
           <p style={{ textAlign: 'center', color: '#b3b3b3', marginBottom: 16 }}>
-            {total} résultat{total === 1 ? '' : 's'}
+            {isBlankQuery
+              ? 'Retour complet : tous les titres'
+              : `${total} résultat${total === 1 ? '' : 's'}`}
           </p>
         )}
         {renderBody()}
